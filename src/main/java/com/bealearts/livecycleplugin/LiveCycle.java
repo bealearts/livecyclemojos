@@ -1,7 +1,5 @@
-package com.bealearts;
-
 /*
- * Copyright 2001-2005 The Apache Software Foundation.
+ * Copyright (c) 2011, David Beale
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +13,8 @@ package com.bealearts;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.bealearts.livecycleplugin;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -30,7 +30,8 @@ import java.io.IOException;
  * 
  * @phase process-sources
  */
-public class MyMojo extends AbstractMojo {
+public class LiveCycle extends AbstractMojo
+{
 	/**
 	 * Location of the file.
 	 * 
@@ -39,7 +40,8 @@ public class MyMojo extends AbstractMojo {
 	 */
 	private File outputDirectory;
 
-	public void execute() throws MojoExecutionException {
+	public void execute() throws MojoExecutionException
+	{
 		File f = outputDirectory;
 
 		if (!f.exists()) {

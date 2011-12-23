@@ -1,0 +1,55 @@
+<lca_info xmlns="http://adobe.com/idp/applicationmanager/appinfo">
+	<!-- BEGIN: main -->
+	
+	<!-- BEGIN: app-info -->
+	<application-info>
+		<action xmlns="">Create</action>
+		<name xmlns="">HTTP</name>
+		<type xmlns="">WHOLE</type>
+		<implementation-version xmlns="">9.0</implementation-version>
+		<major-version xmlns="">6</major-version>
+		<minor-version xmlns="">1</minor-version>
+		<createdDate xmlns="">2011-12-15T09:23:46.082Z</createdDate>
+		<description xmlns="">Fix duplicate process IDs</description>
+		
+		<!-- BEGIN: top-level-object -->
+		<top-level-object xmlns="">
+			<action>Create</action>
+			<name>HTTP - Get Process Status.process</name>
+			<type>process</type>
+			<revision>1.3</revision>
+			<deployment-id/>
+			<deployment-version/>
+			<description/>
+			
+			<!-- BEGIN: secondary-object -->
+			<secondary-object>
+				<name>HTTP - Get Process Status.process_dependency</name>
+				<type>process_dependency</type>
+			</secondary-object>
+			<!-- END: secondary-object -->
+			
+			<!-- BEGIN: reference -->
+			<reference>
+				<far-reference>
+					<application-name>UserManagement</application-name>
+					<application-major-version>6</application-major-version>
+					<application-minor-version>0</application-minor-version>
+					<name>_GetIDforGroup.process</name>
+				</far-reference>
+			</reference>
+			<!-- END: reference -->
+			
+			<properties>rO0ABXNyABRqYXZhLnV0aWwuUHJvcGVydGllczkS0HpwNj6YAgABTAAIZGVmYXVsdHN0ABZMamF2YS91dGlsL1Byb3BlcnRpZXM7eHIAE2phdmEudXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAAAAAIdwgAAAALAAAAAHhw</properties>
+		</top-level-object>
+		<!-- END: top-level-object -->
+    
+    </application-info>
+    <!-- END: app-info -->
+    
+	<type xmlns="">Multiple</type>
+	<createdDate xmlns="">2011-12-15T09:24:02.036Z</createdDate>
+	<description xmlns="">Created on 15/12/11 09:08 by administrator</description>
+	<createdBy xmlns="">administrator</createdBy>
+	<!-- END: main -->
+</lca_info>
