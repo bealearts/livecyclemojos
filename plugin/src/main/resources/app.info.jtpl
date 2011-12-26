@@ -1,18 +1,36 @@
+<!-- 
+/*
+ * Copyright (c) 2011, David Beale
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ -->
+
+<!-- BEGIN: main -->
 <lca_info xmlns="http://adobe.com/idp/applicationmanager/appinfo">
-	<!-- BEGIN: main -->
 	
-	<!-- BEGIN: app-info -->
+	<!-- BEGIN: appinfo -->
 	<application-info>
 		<action xmlns="">Create</action>
-		<name xmlns="">HTTP</name>
+		<name xmlns="">{NAME}</name>
 		<type xmlns="">WHOLE</type>
 		<implementation-version xmlns="">9.0</implementation-version>
-		<major-version xmlns="">6</major-version>
-		<minor-version xmlns="">1</minor-version>
-		<createdDate xmlns="">2011-12-15T09:23:46.082Z</createdDate>
-		<description xmlns="">Fix duplicate process IDs</description>
+		<major-version xmlns="">{MAJORVERSION}</major-version>
+		<minor-version xmlns="">{MINORVERSION}</minor-version>
+		<createdDate xmlns="">{TIMESTAMP}</createdDate>
+		<description xmlns=""/>
 		
-		<!-- BEGIN: top-level-object -->
+		<!-- BEGIN: toplevelobject -->
 		<top-level-object xmlns="">
 			<action>Create</action>
 			<name>HTTP - Get Process Status.process</name>
@@ -22,12 +40,12 @@
 			<deployment-version/>
 			<description/>
 			
-			<!-- BEGIN: secondary-object -->
+			<!-- BEGIN: secondaryobject -->
 			<secondary-object>
 				<name>HTTP - Get Process Status.process_dependency</name>
 				<type>process_dependency</type>
 			</secondary-object>
-			<!-- END: secondary-object -->
+			<!-- END: secondaryobject -->
 			
 			<!-- BEGIN: reference -->
 			<reference>
@@ -42,14 +60,14 @@
 			
 			<properties>rO0ABXNyABRqYXZhLnV0aWwuUHJvcGVydGllczkS0HpwNj6YAgABTAAIZGVmYXVsdHN0ABZMamF2YS91dGlsL1Byb3BlcnRpZXM7eHIAE2phdmEudXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAAAAAIdwgAAAALAAAAAHhw</properties>
 		</top-level-object>
-		<!-- END: top-level-object -->
+		<!-- END: toplevelobject -->
     
     </application-info>
-    <!-- END: app-info -->
+    <!-- END: appinfo -->
     
 	<type xmlns="">Multiple</type>
-	<createdDate xmlns="">2011-12-15T09:24:02.036Z</createdDate>
-	<description xmlns="">Created on 15/12/11 09:08 by administrator</description>
-	<createdBy xmlns="">administrator</createdBy>
-	<!-- END: main -->
+	<createdDate xmlns="">{TIMESTAMP}</createdDate>
+	<description xmlns="">Created on 15/12/11 09:08 by {CREATEDBY}</description>
+	<createdBy xmlns="">{CREATEDBY}</createdBy>
 </lca_info>
+<!-- END: main -->

@@ -14,35 +14,27 @@
  * limitations under the License.
  */
 
-package com.bealearts.livecycleplugin.utils;
+package com.bealearts.livecycleplugin.lca;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-
-import net.sf.jtpl.Template;
 
 /**
- * LiveCycle Archive Utilities
+ * Models a LiveCycle Archive application info element
  */
-public class LCAUtils
+public class AppInfo 
 {
 	/* PUBLIC */
 	
-	/**
-	 * Render the app.info file content from a template
-	 * @throws FileNotFoundException 
-	 */
-	public String renderAppInfo(File templateFile, Object lcaDefinition) throws FileNotFoundException
-	{
-		Template template = new Template(templateFile);
-		
-		
-		
-		return template.out();	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	
-	/* PROTECTED */
-	
 	/* PRIVATE */
+	
+	private String name;
+
 }
