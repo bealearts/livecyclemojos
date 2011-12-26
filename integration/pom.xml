@@ -21,14 +21,6 @@
 				<artifactId>livecycle-maven-plugin</artifactId>
 				<version>${project.version}</version>
 				<extensions>true</extensions>
-				<executions>
-					<execution>
-						<phase>compile</phase>
-						<goals>
-							<goal>touch</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 
@@ -52,7 +44,7 @@
 											[1.0-SNAPSHOT,)
 										</versionRange>
 										<goals>
-											<goal>touch</goal>
+											<goal>app-info</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>

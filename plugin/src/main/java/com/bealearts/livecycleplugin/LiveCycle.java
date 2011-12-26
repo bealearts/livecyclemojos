@@ -26,9 +26,9 @@ import java.io.IOException;
 /**
  * Goal which touches a timestamp file.
  * 
- * @goal touch
+ * @goal app-info
  * 
- * @phase compile
+ * @phase process-sources
  */
 public class LiveCycle extends AbstractMojo
 {

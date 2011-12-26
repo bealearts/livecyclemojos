@@ -7,7 +7,7 @@
 			<configuration>
 				<phases>
 					<process-resources>org.apache.maven.plugins:maven-resources-plugin:resources</process-resources>
-					<compile>com.bealearts:livecycle-maven-plugin:touch</compile>
+					<process-sources>com.bealearts:livecycle-maven-plugin:app-info</process-sources>
 				</phases>
 			</configuration>
 		</component>
