@@ -1,0 +1,15 @@
+<component-set>
+	<components>
+		<component>
+			<role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
+			<role-hint>lca</role-hint>
+			<implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping</implementation>
+			<configuration>
+				<phases>
+					<process-resources>org.apache.maven.plugins:maven-resources-plugin:resources</process-resources>
+					<compile>com.bealearts:livecycle-maven-plugin:touch</compile>
+				</phases>
+			</configuration>
+		</component>
+	</components>
+</component-set>

@@ -28,7 +28,7 @@ import java.io.IOException;
  * 
  * @goal touch
  * 
- * @phase process-sources
+ * @phase compile
  */
 public class LiveCycle extends AbstractMojo
 {

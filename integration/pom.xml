@@ -9,7 +9,7 @@
 	</parent>
 	
 	<artifactId>livecycle-maven-integration</artifactId>
-	<packaging>jar</packaging>
+	<packaging>lca</packaging>
 
 
 	<build>
@@ -20,10 +20,10 @@
 				<groupId>${project.groupId}</groupId>
 				<artifactId>livecycle-maven-plugin</artifactId>
 				<version>${project.version}</version>
-				<extensions>false</extensions>
+				<extensions>true</extensions>
 				<executions>
 					<execution>
-						<phase>process-sources</phase>
+						<phase>compile</phase>
 						<goals>
 							<goal>touch</goal>
 						</goals>
