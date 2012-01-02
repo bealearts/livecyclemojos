@@ -7,7 +7,7 @@
 			<configuration>
 				<phases>
 					<process-resources>org.apache.maven.plugins:maven-resources-plugin:resources</process-resources>
-					<process-sources>com.bealearts:livecycle-maven-plugin:app-info</process-sources>
+					<process-sources>com.bealearts:livecyclemojos-maven-plugin:app-info</process-sources>
 				</phases>
 			</configuration>
 		</component>

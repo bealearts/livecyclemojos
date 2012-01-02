@@ -24,31 +24,34 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * Goal which touches a timestamp file.
+ * Mojo to Generate the LiveCycle Archive app.info descriptor
  * 
  * @goal app-info
- * 
  * @phase process-sources
  */
-public class LiveCycle extends AbstractMojo
+public class AppInfoMojo extends AbstractMojo
 {
 	/**
-	 * Location of the file.
+	 * Location for the app.info file.
 	 * 
 	 * @parameter expression="${project.build.directory}"
 	 * @required
 	 */
 	private File outputDirectory;
 
+	
+	/**
+	 * Execute the mojo
+	 */
 	public void execute() throws MojoExecutionException
 	{
-		File f = outputDirectory;
-
-		if (!f.exists()) {
-			f.mkdirs();
+		if ( !this.outputDirectory.exists() )
+		{
+			if ( !this.outputDirectory.mkdirs() )
+				throw new MojoExecutionException("Error creating output directory: " + this.outputDirectory.getAbsolutePath());
 		}
 
-		File touch = new File(f, "touch.txt");
+		File touch = new File(this.outputDirectory, "touch.txt");
 
 		FileWriter w = null;
 		try {

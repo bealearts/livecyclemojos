@@ -4,11 +4,11 @@
 	
 	<parent>
 		<groupId>com.bealearts</groupId>
-		<artifactId>livecycle-maven</artifactId>
+		<artifactId>livecyclemojos</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 	
-	<artifactId>livecycle-maven-integration</artifactId>
+	<artifactId>livecyclemojos-integration</artifactId>
 	<packaging>lca</packaging>
 
 
@@ -18,7 +18,7 @@
 		<plugins>
 			<plugin>
 				<groupId>${project.groupId}</groupId>
-				<artifactId>livecycle-maven-plugin</artifactId>
+				<artifactId>livecyclemojos-maven-plugin</artifactId>
 				<version>${project.version}</version>
 				<extensions>true</extensions>
 			</plugin>
@@ -38,7 +38,7 @@
 									<pluginExecutionFilter>
 										<groupId>com.bealearts</groupId>
 										<artifactId>
-											livecycle-maven-plugin
+											livecyclemojos-maven-plugin
 										</artifactId>
 										<versionRange>
 											[1.0-SNAPSHOT,)
