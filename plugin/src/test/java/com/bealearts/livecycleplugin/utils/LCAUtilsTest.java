@@ -18,8 +18,14 @@ package com.bealearts.livecycleplugin.utils;
 
 import static org.junit.Assert.*;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -60,7 +66,7 @@ public class LCAUtilsTest
 	/* TESTS */
 	
 	@Test
-	public void testRenderAppInfo() throws FileNotFoundException
+	public void testRenderAppInfo() throws FileNotFoundException, IOException
 	{
 		LCAUtils lcaUtils = new LCAUtils();
 		
@@ -81,7 +87,11 @@ public class LCAUtilsTest
 		
 		String output = lcaUtils.renderAppInfo(this.getResource("app.info.jtpl"), lcaDef);
 		
-		//fail(output);
+		//this.saveAsFile(output);
+		
+		String exampleAppInfo = this.readTextFile(this.getResource("test.app.info"));
+		
+		Assert.assertEquals(exampleAppInfo, output);
 	}
 	
 	
@@ -94,5 +104,30 @@ public class LCAUtilsTest
 		absolutePath = absolutePath.replaceFirst("file:", "");
 		
 		return new File(absolutePath);
+	}
+	
+	
+	private void saveAsFile(String content) throws IOException
+	{
+		FileWriter writer = new FileWriter(new File(this.getResource(""), "test.app.info"));
+		writer.write(content);
+		writer.close();
+	}
+	
+	
+	private String readTextFile(File file) throws IOException 
+	{
+		StringBuffer sb = new StringBuffer(1024);
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+				
+		char[] chars = new char[1024];
+		int numRead = 0;
+		while( (numRead = reader.read(chars)) > -1){
+			sb.append(String.valueOf(chars));	
+		}
+
+		reader.close();
+
+		return sb.toString();
 	}
 }

@@ -1,0 +1,37 @@
+<lca_info xmlns="http://adobe.com/idp/applicationmanager/appinfo">
+	
+	
+	<application-info>
+		<action xmlns="">Create</action>
+		<name xmlns="">App1</name>
+		<type xmlns="">WHOLE</type>
+		<implementation-version xmlns="">9.0</implementation-version>
+		<major-version xmlns="">4</major-version>
+		<minor-version xmlns="">2</minor-version>
+		<createdDate xmlns="">2012-01-03T10:42:51.531+0000</createdDate>
+		<description xmlns=""/>
+		
+		
+    
+    </application-info>
+    
+	<application-info>
+		<action xmlns="">Create</action>
+		<name xmlns="">App2</name>
+		<type xmlns="">WHOLE</type>
+		<implementation-version xmlns="">9.0</implementation-version>
+		<major-version xmlns="">4</major-version>
+		<minor-version xmlns="">2</minor-version>
+		<createdDate xmlns="">2012-01-03T10:42:51.531+0000</createdDate>
+		<description xmlns=""/>
+		
+		
+    
+    </application-info>
+    
+    
+	<type xmlns="">Multiple</type>
+	<createdDate xmlns="">2012-01-03T10:42:51.531+0000</createdDate>
+	<description xmlns="">Created on 15/12/11 09:08 by Jimmy McTest</description>
+	<createdBy xmlns="">Jimmy McTest</createdBy>
+</lca_info>
