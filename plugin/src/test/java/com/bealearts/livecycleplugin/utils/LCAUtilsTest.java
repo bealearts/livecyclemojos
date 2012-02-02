@@ -20,10 +20,17 @@ import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+import java.util.Scanner;
 
 import junit.framework.Assert;
 
@@ -87,7 +94,7 @@ public class LCAUtilsTest
 		
 		String output = lcaUtils.renderAppInfo(this.getResource("app.info.jtpl"), lcaDef);
 		
-		//this.saveAsFile(output);
+		// this.saveAsFile(new File(this.getResource(""), "test.app.info"), output);
 		
 		String exampleAppInfo = this.readTextFile(this.getResource("test.app.info"));
 		
@@ -107,27 +114,37 @@ public class LCAUtilsTest
 	}
 	
 	
-	private void saveAsFile(String content) throws IOException
+	private void saveAsFile(File file, String content) throws IOException
 	{
-		FileWriter writer = new FileWriter(new File(this.getResource(""), "test.app.info"));
-		writer.write(content);
-		writer.close();
+		Writer out = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
+	    try 
+	    {
+	    	out.write(content);
+	    }
+	    finally 
+	    {
+	    	out.close();
+	    }		
 	}
 	
-	
-	private String readTextFile(File file) throws IOException 
+	private String readTextFile(File file) throws IOException
 	{
-		StringBuffer sb = new StringBuffer(1024);
-		BufferedReader reader = new BufferedReader(new FileReader(file));
-				
-		char[] chars = new char[1024];
-		int numRead = 0;
-		while( (numRead = reader.read(chars)) > -1){
-			sb.append(String.valueOf(chars));	
+		StringBuilder text = new StringBuilder();
+		String NL = System.getProperty("line.separator");
+		Scanner scanner = new Scanner(new FileInputStream(file), "UTF-8");
+
+		try 
+		{
+			while (scanner.hasNextLine()) 
+			{
+				text.append(scanner.nextLine() + NL);
+			}
+		} 
+		finally 
+		{
+			scanner.close();
 		}
-
-		reader.close();
-
-		return sb.toString();
+		
+		return text.toString();
 	}
 }
