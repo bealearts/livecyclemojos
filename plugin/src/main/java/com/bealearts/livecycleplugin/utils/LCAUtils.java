@@ -49,9 +49,13 @@ public class LCAUtils
 		
 		for (AppInfo app:lcaDefinition.getApplications())
 		{
-			
 			for (LCAObject obj:app.getLcaObjects())
 			{
+				for (LCAObject objSecond:obj.getLcaObjects())
+				{
+					template.parse("main.appinfo.toplevelobject.secondaryobject", objSecond);
+				}
+				
 				template.parse("main.appinfo.toplevelobject", obj);
 			}
 			

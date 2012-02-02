@@ -16,6 +16,9 @@
 
 package com.bealearts.livecycleplugin.lca;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Models a LiveCycle Archive Object element
@@ -48,6 +51,13 @@ public class LCAObject
 		this.revision = revision;
 	}
 	
+	public List<LCAObject> getLcaObjects() {
+		return lcaObjects;
+	}
+
+	public void setLcaObjects(List<LCAObject> lcaObjects) {
+		this.lcaObjects = lcaObjects;
+	}	
 	
 	
 	/* PRIVATE */
@@ -55,4 +65,5 @@ public class LCAObject
 	private String name;
 	private String type;
 	private String revision;
+	private List<LCAObject> lcaObjects = new ArrayList<LCAObject>();
 }

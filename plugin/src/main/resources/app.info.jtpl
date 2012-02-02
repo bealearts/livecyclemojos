@@ -42,8 +42,8 @@
 			
 			<!-- BEGIN: secondaryobject -->
 			<secondary-object>
-				<name>HTTP - Get Process Status.process_dependency</name>
-				<type>process_dependency</type>
+				<name>{NAME}</name>
+				<type>{TYPE}</type>
 			</secondary-object>
 			<!-- END: secondaryobject -->
 			
