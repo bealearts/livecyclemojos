@@ -54,7 +54,7 @@ public class LCAUtils
 
 		template.parse("main", lcaDefinition);
 		
-		return template.out();	
+		return template.out();
 	}
 	
 	

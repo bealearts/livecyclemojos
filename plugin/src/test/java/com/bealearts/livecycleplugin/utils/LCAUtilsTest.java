@@ -18,27 +18,21 @@ package com.bealearts.livecycleplugin.utils;
 
 import static org.junit.Assert.*;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
-import java.util.Scanner;
 
-import junit.framework.Assert;
+import javax.xml.namespace.NamespaceContext;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.xmlmatchers.namespace.SimpleNamespaceContext;
+import static org.hamcrest.core.IsEqual.equalTo;
+
+import static org.xmlmatchers.xpath.HasXPath.*;
+import static org.xmlmatchers.transform.XmlConverters.the;
 
 import com.bealearts.livecycleplugin.lca.AppInfo;
 import com.bealearts.livecycleplugin.lca.LCADefinition;
@@ -73,7 +67,7 @@ public class LCAUtilsTest
 	/* TESTS */
 	
 	@Test
-	public void testRenderAppInfo() throws FileNotFoundException, IOException
+	public void testRenderAppInfo() throws FileNotFoundException
 	{
 		LCAUtils lcaUtils = new LCAUtils();
 		
@@ -93,12 +87,18 @@ public class LCAUtilsTest
 		
 		
 		String output = lcaUtils.renderAppInfo(this.getResource("app.info.jtpl"), lcaDef);
+
+		NamespaceContext usingNamespaces = new SimpleNamespaceContext()
+			.withBinding("lca", "http://adobe.com/idp/applicationmanager/appinfo");
 		
-		// this.saveAsFile(new File(this.getResource(""), "test.app.info"), output);
+		assertThat(the(output), hasXPath("/lca:lca_info", usingNamespaces));
+		assertThat(the(output), hasXPath("/lca:lca_info/createdBy", usingNamespaces, equalTo("Jimmy McTest")));
 		
-		String exampleAppInfo = this.readTextFile(this.getResource("test.app.info"));
+		assertThat(the(output), hasXPath("count(/lca:lca_info/lca:application-info)", usingNamespaces, equalTo("2")));
+		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[1]/name", usingNamespaces, equalTo("App1")));
 		
-		Assert.assertEquals(exampleAppInfo, output);
+		
+		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[2]/name", usingNamespaces, equalTo("App2")));
 	}
 	
 	
@@ -111,40 +111,5 @@ public class LCAUtilsTest
 		absolutePath = absolutePath.replaceFirst("file:", "");
 		
 		return new File(absolutePath);
-	}
-	
-	
-	private void saveAsFile(File file, String content) throws IOException
-	{
-		Writer out = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
-	    try 
-	    {
-	    	out.write(content);
-	    }
-	    finally 
-	    {
-	    	out.close();
-	    }		
-	}
-	
-	private String readTextFile(File file) throws IOException
-	{
-		StringBuilder text = new StringBuilder();
-		String NL = System.getProperty("line.separator");
-		Scanner scanner = new Scanner(new FileInputStream(file), "UTF-8");
-
-		try 
-		{
-			while (scanner.hasNextLine()) 
-			{
-				text.append(scanner.nextLine() + NL);
-			}
-		} 
-		finally 
-		{
-			scanner.close();
-		}
-		
-		return text.toString();
 	}
 }
