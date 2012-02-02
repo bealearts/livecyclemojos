@@ -16,14 +16,11 @@
 
 package com.bealearts.livecycleplugin.lca;
 
-import java.util.ArrayList;
-import java.util.List;
-
 
 /**
- * Models a LiveCycle Archive application info element
+ * Models a LiveCycle Archive Object element
  */
-public class AppInfo 
+public class LCAObject
 {
 	/* PUBLIC */
 	
@@ -35,19 +32,27 @@ public class AppInfo
 		this.name = name;
 	}
 	
-	public List<LCAObject> getLcaObjects() {
-		return lcaObjects;
+	public String getType() {
+		return type;
 	}
 
-	public void setLcaObjects(List<LCAObject> lcaObjects) {
-		this.lcaObjects = lcaObjects;
+	public void setType(String type) {
+		this.type = type;
+	}	
+
+	public String getRevision() {
+		return revision;
 	}
 
+	public void setRevision(String revision) {
+		this.revision = revision;
+	}
+	
 	
 	
 	/* PRIVATE */
 
 	private String name;
-	private List<LCAObject> lcaObjects = new ArrayList<LCAObject>();
-
+	private String type;
+	private String revision;
 }

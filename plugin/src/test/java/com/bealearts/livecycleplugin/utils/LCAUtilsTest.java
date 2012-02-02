@@ -36,6 +36,7 @@ import static org.xmlmatchers.transform.XmlConverters.the;
 
 import com.bealearts.livecycleplugin.lca.AppInfo;
 import com.bealearts.livecycleplugin.lca.LCADefinition;
+import com.bealearts.livecycleplugin.lca.LCAObject;
 
 /**
  * Tests for LCAUtils
@@ -78,11 +79,16 @@ public class LCAUtilsTest
 		lcaDef.setMinorVersion("2");
 		
 		AppInfo app1 = new AppInfo();
-		app1.setName("App1");
+			app1.setName("App1");
+				LCAObject obj1 = new LCAObject();
+				obj1.setName("Test Process 1");
+				obj1.setType("process");
+				obj1.setRevision("1.2");
+			app1.getLcaObjects().add(obj1);	
 		lcaDef.getApplications().add(app1);
 		
 		AppInfo app2 = new AppInfo();
-		app2.setName("App2");
+			app2.setName("App2");
 		lcaDef.getApplications().add(app2);
 		
 		
@@ -96,6 +102,10 @@ public class LCAUtilsTest
 		
 		assertThat(the(output), hasXPath("count(/lca:lca_info/lca:application-info)", usingNamespaces, equalTo("2")));
 		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[1]/name", usingNamespaces, equalTo("App1")));
+		assertThat(the(output), hasXPath("count(/lca:lca_info/lca:application-info[1]/top-level-object)", usingNamespaces, equalTo("1")));
+		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[1]/top-level-object/name", usingNamespaces, equalTo("Test Process 1")));
+		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[1]/top-level-object/type", usingNamespaces, equalTo("process")));
+		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[1]/top-level-object/revision", usingNamespaces, equalTo("1.2")));
 		
 		
 		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[2]/name", usingNamespaces, equalTo("App2")));

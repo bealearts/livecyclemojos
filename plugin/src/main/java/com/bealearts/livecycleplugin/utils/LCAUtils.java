@@ -23,6 +23,7 @@ import java.util.Calendar;
 
 import com.bealearts.livecycleplugin.lca.AppInfo;
 import com.bealearts.livecycleplugin.lca.LCADefinition;
+import com.bealearts.livecycleplugin.lca.LCAObject;
 
 import net.sf.jtpl.Template;
 
@@ -48,6 +49,11 @@ public class LCAUtils
 		
 		for (AppInfo app:lcaDefinition.getApplications())
 		{
+			
+			for (LCAObject obj:app.getLcaObjects())
+			{
+				template.parse("main.appinfo.toplevelobject", obj);
+			}
 			
 			template.parse("main.appinfo", app);
 		}
