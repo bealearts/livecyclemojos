@@ -59,7 +59,8 @@ public class LCAUtils
 			{
 				String revision = revisionDir.getName();
 				
-				File[] objectFiles = revisionDir.listFiles();
+				// Top level objects
+				File[] objectFiles = revisionDir.listFiles(this.topLevelObjectFilter);
 				for (File objectFile:objectFiles)
 				{
 					LCAObject obj = new LCAObject();
@@ -155,6 +156,28 @@ public class LCAUtils
 	    public boolean accept(File file) 
 	    {
 	        return file.isDirectory();
+	    }
+	};
+	
+	/** 
+	 * This filter only returns top level object files
+	 */
+	private FileFilter topLevelObjectFilter = new FileFilter() 
+	{
+	    public boolean accept(File file) 
+	    {
+	        return !file.isDirectory() && !file.getName().endsWith("_dependency") && !file.getName().endsWith("dci");
+	    }
+	};
+	
+	/** 
+	 * This filter only returns secondary object files
+	 */
+	private FileFilter secondaryObjectFilter = new FileFilter() 
+	{
+	    public boolean accept(File file) 
+	    {
+	    	return !file.isDirectory() && (file.getName().endsWith("_dependency") || file.getName().endsWith("dci"));
 	    }
 	};
 }
