@@ -29,6 +29,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.omg.CosNaming.IstringHelper;
 import org.xmlmatchers.namespace.SimpleNamespaceContext;
 import static org.hamcrest.core.IsEqual.equalTo;
 
@@ -138,6 +139,27 @@ public class LCAUtilsTest
 		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[2]/name", usingNamespaces, equalTo("App2")));
 	}
 	
+	
+	
+	@Test
+	public void testWriteAppInfo() throws IOException
+	{
+		File sourcePath = new File(this.getResource(""), "TestSourcePath");
+		
+		LCAUtils lcaUtils = new LCAUtils();
+		
+		LCADefinition lcaDef = lcaUtils.parseSourceFiles(sourcePath);
+		lcaDef.setCreatedBy("Jimmy McTest");
+		lcaDef.setDescription("A Test Archive");
+		lcaDef.setMajorVersion("4");
+		lcaDef.setMinorVersion("2");
+		String content = lcaUtils.renderAppInfo(this.getResource("app.info.jtpl"), lcaDef);
+		
+		lcaUtils.writeAppInfo(sourcePath, content);
+		
+		File appInfoFile = new File(sourcePath, "app.info");
+		assertThat(appInfoFile.exists(), equalTo(true));
+	}
 	
 	
 	/* PRIVATE */

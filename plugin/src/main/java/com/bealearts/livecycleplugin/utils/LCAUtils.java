@@ -19,6 +19,11 @@ package com.bealearts.livecycleplugin.utils;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -105,6 +110,24 @@ public class LCAUtils
 		template.parse("main", lcaDefinition);
 		
 		return template.out();
+	}
+	
+	
+	/**
+	 * Write the app.info file to the target path
+	 * @throws IOException 
+	 */
+	public void writeAppInfo(File targetPath, String content) throws IOException
+	{
+		Writer out = new OutputStreamWriter(new FileOutputStream(new File(targetPath, "app.info")), "UTF-8");
+	    try 
+	    {
+	      out.write(content);
+	    }
+	    finally 
+	    {
+	      out.close();
+	    }
 	}
 	
 	
