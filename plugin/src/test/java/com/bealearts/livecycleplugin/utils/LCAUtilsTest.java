@@ -20,6 +20,7 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import javax.xml.namespace.NamespaceContext;
 
@@ -66,6 +67,26 @@ public class LCAUtilsTest
 
 	
 	/* TESTS */
+	
+	
+	@Test
+	public void testParseSourceFiles() throws IOException
+	{
+		File sourcePath = new File(this.getResource(""), "TestSourcePath");
+		
+		LCAUtils lcaUtils = new LCAUtils();
+		
+		LCADefinition lcaDef = lcaUtils.parseSourceFiles(sourcePath);
+		
+		assertThat(lcaDef.getApplications().get(0).getName(), equalTo("App1"));
+		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(0).getName(), equalTo("Test Process 1.process"));
+		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(0).getRevision(), equalTo("1.2"));
+		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(0).getType(), equalTo("process"));
+		
+		assertThat(lcaDef.getApplications().get(1).getName(), equalTo("App2"));
+	}
+	
+	
 	
 	@Test
 	public void testRenderAppInfo() throws FileNotFoundException

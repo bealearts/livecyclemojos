@@ -17,6 +17,7 @@
 package com.bealearts.livecycleplugin.utils;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -33,6 +34,45 @@ import net.sf.jtpl.Template;
 public class LCAUtils
 {
 	/* PUBLIC */
+	
+	
+	/**
+	 * Parse the LiveCycle source files to generate an LCADefinition
+	 */
+	public LCADefinition parseSourceFiles(File sourcePath)
+	{
+		LCADefinition lcaDefinition = new LCADefinition();
+		
+		File[] applicationDirs = sourcePath.listFiles(this.dirFilter);
+		for (File applicationDir:applicationDirs)
+		{
+			AppInfo appInfo = new AppInfo();
+			appInfo.setName(applicationDir.getName());
+			
+			File[] revisionDirs = applicationDir.listFiles(this.dirFilter);
+			for (File revisionDir:revisionDirs)
+			{
+				String revision = revisionDir.getName();
+				
+				File[] objectFiles = revisionDir.listFiles();
+				for (File objectFile:objectFiles)
+				{
+					LCAObject obj = new LCAObject();
+					obj.setName(objectFile.getName());
+					obj.setRevision(revision);
+					obj.setType(objectFile.getName().substring(objectFile.getName().lastIndexOf('.')+1));
+					
+					appInfo.getLcaObjects().add(obj);
+				}
+			}
+			
+			lcaDefinition.getApplications().add(appInfo);
+		}
+		
+		return lcaDefinition;
+	}
+	
+	
 	
 	/**
 	 * Render the app.info file content from a template
@@ -73,7 +113,7 @@ public class LCAUtils
 	/* PRIVATE */
 	
 	
-	/*
+	/**
 	 * Returns the current date and time based on the specified format.
 	 */
 	private String timestamp(String dateFormat)
@@ -82,4 +122,16 @@ public class LCAUtils
 	    SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
 	    return sdf.format(cal.getTime());
 	}
+	
+	
+	/** 
+	 * This filter only returns directories
+	 */
+	private FileFilter dirFilter = new FileFilter() 
+	{
+	    public boolean accept(File file) 
+	    {
+	        return file.isDirectory();
+	    }
+	};
 }

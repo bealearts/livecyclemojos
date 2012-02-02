@@ -67,7 +67,7 @@
     
 	<type xmlns="">Multiple</type>
 	<createdDate xmlns="">{TIMESTAMP}</createdDate>
-	<description xmlns="">Created on 15/12/11 09:08 by {CREATEDBY}</description>
+	<description xmlns="">Created on {TIMESTAMP} by {CREATEDBY}</description>
 	<createdBy xmlns="">{CREATEDBY}</createdBy>
 </lca_info>
 <!-- END: main -->
