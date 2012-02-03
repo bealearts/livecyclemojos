@@ -22,7 +22,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -68,8 +67,20 @@ public class LCAUtils
 					obj.setRevision(revision);
 					obj.setType(objectFile.getName().substring(objectFile.getName().lastIndexOf('.')+1));
 					
+					// Secondary level objects
+					File[] secondaryObjectFiles = revisionDir.listFiles( new SecondaryObjectFilter(obj.getName()) );
+					for (File secondaryObjectFile:secondaryObjectFiles)
+					{
+						LCAObject secObj = new LCAObject();
+						secObj.setName(secondaryObjectFile.getName());
+						secObj.setType(secondaryObjectFile.getName().substring(secondaryObjectFile.getName().lastIndexOf('.')+1));
+						
+						obj.getLcaObjects().add(secObj);
+					}
+					
 					appInfo.getLcaObjects().add(obj);
 				}
+				
 			}
 			
 			lcaDefinition.getApplications().add(appInfo);
@@ -170,14 +181,4 @@ public class LCAUtils
 	    }
 	};
 	
-	/** 
-	 * This filter only returns secondary object files
-	 */
-	private FileFilter secondaryObjectFilter = new FileFilter() 
-	{
-	    public boolean accept(File file) 
-	    {
-	    	return !file.isDirectory() && (file.getName().endsWith("_dependency") || file.getName().endsWith("dci"));
-	    }
-	};
 }
