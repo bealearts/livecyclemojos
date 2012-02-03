@@ -18,6 +18,8 @@ package com.bealearts.livecycleplugin.utils;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -38,8 +40,8 @@ public class SecondaryObjectFilter implements FileFilter
 	
     
 	public boolean accept(File file) 
-    {
-    	return !file.isDirectory() && (file.getName().endsWith("_dependency") || file.getName().endsWith("dci") && file.getName().contains(this.topLevelObjectName));
+    {	
+		return !file.isDirectory() && (file.getName().endsWith("_dependency") || file.getName().endsWith("dci")) && file.getName().contains(this.topLevelObjectName);
     }
 
 	

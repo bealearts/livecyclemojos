@@ -80,7 +80,7 @@ public class LCAUtilsTest
 		LCADefinition lcaDef = lcaUtils.parseSourceFiles(sourcePath);
 		
 		assertThat(lcaDef.getApplications().get(0).getName(), equalTo("App1"));
-		assertThat(lcaDef.getApplications().get(0).getLcaObjects().size(), equalTo(1));
+		assertThat(lcaDef.getApplications().get(0).getLcaObjects().size(), equalTo(2));
 		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(0).getName(), equalTo("Test Process 1.process"));
 		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(0).getRevision(), equalTo("1.2"));
 		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(0).getType(), equalTo("process"));
