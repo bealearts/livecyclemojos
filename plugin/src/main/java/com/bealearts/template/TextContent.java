@@ -14,37 +14,51 @@
  * limitations under the License.
  */
 
-package com.bealearts.livecycleplugin.utils;
+package com.bealearts.template;
 
-import java.io.File;
-import java.io.FileFilter;
-
-
-/**
- * Filter for LCA secondary level objects
- */
-public class SecondaryObjectFilter implements FileFilter
+public class TextContent implements ITemplateContent 
 {
 	/* PUBLIC */
-	
 	
 	/**
 	 * Constructor
 	 */
-	public SecondaryObjectFilter(String topLevelObjectName)
+	public TextContent(String content)
 	{
-		this.topLevelObjectName = topLevelObjectName;
+		this.setContent(content);
 	}
 	
-    
-	public boolean accept(File file) 
-    {	
-		return !file.isDirectory() && (file.getName().endsWith("_dependency") || file.getName().endsWith("dci")) && file.getName().contains(this.topLevelObjectName);
-    }
+	
+	public String getContent() {
+		return content;
+	}
 
+	public void setContent(String content) {
+		this.content = content;
+	}
+	
+	
+	public BlockContent getParent() {
+		return parent;
+	}
+
+	public void setParent(BlockContent parent) {
+		this.parent = parent;
+	}
+	
+	
+	/**
+	 * Render text content
+	 */
+	public String toString()
+	{
+		return this.content;
+	}
 	
 	
 	/* PRIVATE */
 	
-	private String topLevelObjectName;
+	private String content;
+	
+	private BlockContent parent;
 }

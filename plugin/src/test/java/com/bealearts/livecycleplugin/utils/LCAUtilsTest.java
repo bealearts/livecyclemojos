@@ -29,7 +29,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.omg.CosNaming.IstringHelper;
 import org.xmlmatchers.namespace.SimpleNamespaceContext;
 import static org.hamcrest.core.IsEqual.equalTo;
 
@@ -85,6 +84,7 @@ public class LCAUtilsTest
 		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(0).getRevision(), equalTo("1.2"));
 		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(0).getType(), equalTo("process"));
 		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(0).getLcaObjects().size(), equalTo(1));
+		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(1).getLcaObjects().size(), equalTo(1));
 		
 		assertThat(lcaDef.getApplications().get(1).getName(), equalTo("App2"));
 	}
@@ -117,6 +117,15 @@ public class LCAUtilsTest
 		
 		AppInfo app2 = new AppInfo();
 			app2.setName("App2");
+				LCAObject obj2 = new LCAObject();
+				obj2.setName("Test Process 2");
+				obj2.setType("process");
+				obj2.setRevision("1.2");
+					LCAObject objSecond2 = new LCAObject();
+					objSecond2.setName("Test Process 2.process_dependency");
+					objSecond2.setType("process_dependency");
+				obj2.getLcaObjects().add(objSecond2);
+			app2.getLcaObjects().add(obj2);	
 		lcaDef.getApplications().add(app2);
 		
 		
@@ -134,11 +143,13 @@ public class LCAUtilsTest
 		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[1]/top-level-object/name", usingNamespaces, equalTo("Test Process 1")));
 		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[1]/top-level-object/type", usingNamespaces, equalTo("process")));
 		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[1]/top-level-object/revision", usingNamespaces, equalTo("1.2")));
+		assertThat(the(output), hasXPath("count(/lca:lca_info/lca:application-info[1]/top-level-object/secondary-object)", equalTo("1)")));
 		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[1]/top-level-object/secondary-object[1]/name", usingNamespaces, equalTo("Test Process 1.process_dependency")));
 		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[1]/top-level-object/secondary-object[1]/type", usingNamespaces, equalTo("process_dependency")));
 		
 		
 		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[2]/name", usingNamespaces, equalTo("App2")));
+		assertThat(the(output), hasXPath("count(/lca:lca_info/lca:application-info[2]/top-level-object/secondary-object)", equalTo("1)")));
 	}
 	
 	
