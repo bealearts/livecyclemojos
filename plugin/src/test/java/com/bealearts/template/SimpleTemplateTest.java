@@ -66,7 +66,10 @@ public class SimpleTemplateTest
 		
 		assertThat(content, equalTo(""));
 		
-		template.addBlockInstance("main", new Object());
+		Block main = new Block("main", null);
+		main.addSubBlock( new Block("appinfo", null) );
+		
+		template.setMainBlock(main);
 		
 		content = template.toString();
 		assertThat(content, equalTo(""));

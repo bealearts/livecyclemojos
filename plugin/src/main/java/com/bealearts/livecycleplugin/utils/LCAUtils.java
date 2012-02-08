@@ -29,6 +29,8 @@ import java.util.Calendar;
 import com.bealearts.livecycleplugin.lca.AppInfo;
 import com.bealearts.livecycleplugin.lca.LCADefinition;
 import com.bealearts.livecycleplugin.lca.LCAObject;
+import com.bealearts.template.Block;
+import com.bealearts.template.SimpleTemplate;
 
 import net.sf.jtpl.Template;
 
@@ -97,31 +99,36 @@ public class LCAUtils
 	 */
 	public String renderAppInfo(File templateFile, LCADefinition lcaDefinition) throws FileNotFoundException
 	{
-		Template template = new Template(templateFile);
+		SimpleTemplate template = new SimpleTemplate(templateFile);
 		
 		// Global variables
-		template.assign("MAJORVERSION", lcaDefinition.getMajorVersion());
-		template.assign("MINORVERSION", lcaDefinition.getMinorVersion());
-		template.assign("TIMESTAMP", this.timestamp("yyyy-MM-dd'T'HH:mm:ss.SSSZ"));
+		//template.assign("MAJORVERSION", lcaDefinition.getMajorVersion());
+		//template.assign("MINORVERSION", lcaDefinition.getMinorVersion());
+		//template.assign("TIMESTAMP", this.timestamp("yyyy-MM-dd'T'HH:mm:ss.SSSZ"));
+		
+		Block main = new Block("main", lcaDefinition);
 		
 		for (AppInfo app:lcaDefinition.getApplications())
 		{
+			Block appInfo = new Block("appinfo", app);
+			
 			for (LCAObject obj:app.getLcaObjects())
 			{
-				for (LCAObject objSecond:obj.getLcaObjects())
-				{
-					template.parse("main.appinfo.toplevelobject.secondaryobject", objSecond);
-				}
+				Block topLevelObject = new Block("toplevelobject", obj);
 				
-				template.parse("main.appinfo.toplevelobject", obj);
+				for (LCAObject objSecond:obj.getLcaObjects())
+					topLevelObject.addSubBlock( new Block("secondaryobject", objSecond) );
+				
+				// TODO: References
+				
+				appInfo.addSubBlock(topLevelObject);
 			}
 			
-			template.parse("main.appinfo", app);
+			main.addSubBlock(appInfo);
 		}
 
-		template.parse("main", lcaDefinition);
-		
-		return template.out();
+		template.setMainBlock(main);
+		return template.toString();
 	}
 	
 	

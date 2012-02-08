@@ -22,5 +22,5 @@ public interface ITemplateContent
 
 	public void setParent(BlockContent parent);
 	
-	public String toString();
+	public String render(Object data);
 }

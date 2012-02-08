@@ -19,22 +19,29 @@ package com.bealearts.template;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlockContent implements ITemplateContent 
+/**
+ * Models the data and required block output structure
+ */
+public class Block
 {
 	/* PUBLIC */
 	
-	public List<ITemplateContent> getContent() {
-		return this.content;
-	}
-	
-	public ITemplateContent addContentItem(ITemplateContent contentItem)
+	/**
+	 * Constructor
+	 */
+	public Block()
 	{
-		this.content.add(contentItem);
-		contentItem.setParent(this);
 		
-		return contentItem;
 	}
 	
+	public Block(String name, Object data)
+	{
+		this.setName(name);
+		this.data = data;
+	}
+	
+	
+
 	public String getName() {
 		return name;
 	}
@@ -42,32 +49,56 @@ public class BlockContent implements ITemplateContent
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	
+	public Object getData() {
+		return data;
+	}
 
-	public BlockContent getParent() {
+	public void setData(Object data) {
+		this.data = data;
+	}
+
+	
+	public String getBlockPath() 
+	{
+		if (this.parent == null)
+			return this.name;
+		else
+			return this.parent.getBlockPath() + "." + this.name;
+	}
+	
+	
+	public void addSubBlock(Block block)
+	{
+		block.setParent(this);
+		this.blocks.add(block);
+	}
+
+	public List<Block> getSubBlocks()
+	{
+		return this.blocks;
+	}
+	
+
+	public Block getParent() {
 		return parent;
 	}
 
-	public void setParent(BlockContent parent) {
+	public void setParent(Block parent) {
 		this.parent = parent;
 	}
 	
 	
-	/**
-	 * Render content
-	 */
-	public String render(Object data)
-	{
-		return "";
-	}
-	
-	
-	
-	
 	/* PRIVATE */
 
-	private List<ITemplateContent> content = new ArrayList<ITemplateContent>();
+
+
+	private List<Block> blocks = new ArrayList<Block>();
 	
 	private String name;
 	
-	private BlockContent parent;
+	private Object data;
+	
+	private Block parent;
 }

@@ -50,7 +50,7 @@ public class TextContent implements ITemplateContent
 	/**
 	 * Render text content
 	 */
-	public String toString()
+	public String render(Object data)
 	{
 		return this.content;
 	}

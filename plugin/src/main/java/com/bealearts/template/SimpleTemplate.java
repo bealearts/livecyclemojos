@@ -51,6 +51,10 @@ public class SimpleTemplate
 	{	
 		this.template = template;
 		
+		this.blockMap = new HashMap<String, BlockContent>();
+		this.content = null;
+		this.blockData = null;
+		
 		StringBuilder text = new StringBuilder();
 	    String NL = System.getProperty("line.separator");
 	    Scanner scanner = new Scanner(new FileInputStream(template), "UTF-8");
@@ -71,12 +75,11 @@ public class SimpleTemplate
 	
 	
 	/**
-	 * Add a text block instance data
-	 * @throws Exception 
+	 * Add main block definition
 	 */
-	public void addBlockInstance(String blockPath, Object bean) throws Exception
-	{
-		this.getBlockByPath(blockPath).addInstanceData(bean);
+	public void setMainBlock(Block block)
+	{		
+		this.blockData = block;
 	}
 	
 	
@@ -85,7 +88,10 @@ public class SimpleTemplate
 	 */
 	public String toString()
 	{
-		return this.content.toString();
+		if (this.blockData != null)
+			return this.renderBlock(this.blockData);
+		else
+			return "";
 	}
 	
 	
@@ -98,7 +104,9 @@ public class SimpleTemplate
 	
 	private BlockContent content;
 	
-	private Map<String, BlockContent> blockMap = new HashMap<String, BlockContent>();
+	private Map<String, BlockContent> blockMap;
+	
+	private Block blockData;
 	
 	
 	/**
@@ -114,9 +122,6 @@ public class SimpleTemplate
 		
 		while(matcher.find())
 		{
-			LOGGER.info(matcher.group(1));
-			LOGGER.info(matcher.group(2));
-			LOGGER.info(matcher.group(3));
 			if (matcher.group(1).equalsIgnoreCase("BEGIN"))
 			{	
 				if (currentBlock == null)
@@ -141,7 +146,7 @@ public class SimpleTemplate
 					currentBlockPath = currentBlockPath.substring(0, currentBlockPath.lastIndexOf("."));
 			}
 			
-			if (currentBlock != null && matcher.group(3) != null && matcher.group(3).equals(""))
+			if (currentBlock != null && matcher.group(3) != null && !matcher.group(3).equals(""))
 				currentBlock.addContentItem(new TextContent(matcher.group(3)));
 				
 		}
@@ -150,13 +155,36 @@ public class SimpleTemplate
 	
 	
 	/**
-	 * Get a block by its path
-	 * @throws Exception 
+	 * Get a block by its path 
 	 */
-	private BlockContent getBlockByPath(String path) throws Exception
+	private BlockContent getBlockByPath(String path)
 	{
 		return this.blockMap.get(path);
 	}
 	
+	
+	/**
+	 * Render the blocks
+	 */
+	private String renderBlock(Block block)
+	{
+		StringBuilder result = new StringBuilder();
+		
+		BlockContent content = this.getBlockByPath(block.getBlockPath());
+		
+		for (ITemplateContent contentItem:content.getContent())
+		{
+			if (contentItem instanceof TextContent)
+				result.append( contentItem.render(block.getData()) );
+			else
+			{
+				for (Block subBlock:block.getSubBlocks())
+					result.append( this.renderBlock(subBlock) );
+			}
+		}
+		
+		LOGGER.info(result.toString());
+		return result.toString();
+	}
 	 
 }
