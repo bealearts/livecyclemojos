@@ -61,6 +61,17 @@ public class BlockContent implements ITemplateContent
 	}
 	
 	
+	/**
+	 * Get the full path
+	 */
+	public String getBlockPath() 
+	{
+		if (this.parent == null)
+			return this.name;
+		else
+			return this.parent.getBlockPath() + "." + this.name;
+	}
+	
 	
 	
 	/* PRIVATE */

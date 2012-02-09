@@ -16,6 +16,13 @@
 
 package com.bealearts.template;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class TextContent implements ITemplateContent 
 {
 	/* PUBLIC */
@@ -52,7 +59,23 @@ public class TextContent implements ITemplateContent
 	 */
 	public String render(Object data)
 	{
-		return this.content;
+		Map<String, Object> vars = this.getBeanProperties(data);
+		String renderedContent = this.content;
+		
+		Pattern pattern = Pattern.compile("\\{([\\w\\.]+)\\}");
+		Matcher matcher = pattern.matcher(renderedContent);
+		
+		while (matcher.find())
+		{
+			String match = matcher.group(1);
+			
+			if ( vars.containsKey(match) )
+			{
+				renderedContent = renderedContent.replaceFirst("\\{"+match+"\\}", this.escape(vars.get(match).toString()));
+			}
+		}
+		
+		return renderedContent;
 	}
 	
 	
@@ -61,4 +84,50 @@ public class TextContent implements ITemplateContent
 	private String content;
 	
 	private BlockContent parent;
+	
+	
+	
+	
+	/**
+	 * @param bean The instance that has properties named according to JavaBean standard.
+	 * @return Map<String, Object> that should be considered immutable
+	 */
+	private Map<String, Object> getBeanProperties(Object bean) 
+	{
+		HashMap<String, Object> values = new HashMap<String, Object>();
+		if (bean == null) return values;
+		Method[] m = bean.getClass().getMethods();
+		
+		Pattern p = Pattern.compile("get([A-Z]\\w+)");
+		
+		for (int i = 0; i < m.length; i++) {
+			if (m[i].getName().equals("getClass")) continue;
+			if (m[i].getParameterTypes().length > 0) continue;
+			Matcher r = p.matcher(m[i].getName());
+			if (r.matches()) {
+				try {
+					values.put(r.group(1).toUpperCase(), m[i].invoke(bean, new Object[0]));
+				} catch (IllegalArgumentException e) {
+					throw e;
+				} catch (IllegalAccessException e) {
+					throw new RuntimeException(e);
+				} catch (InvocationTargetException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+		return values;
+	}
+	
+	
+	/**
+	 * Template parsing uses regex replace to insert result text,
+	 * which means that special characters in replacement string must be escaped.
+	 * @param replacement The text that should appear in output.
+	 * @return Text escaped so that it works as String.replaceFirst replacement.
+	 */
+	protected String escape(String replacement) 
+	{
+		return replacement.replace("\\", "\\\\").replace("$", "\\$");
+	}
 }

@@ -1,0 +1,1146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xfa generator="AdobeLiveCycleDesignerES_V9.0.0.2.20100902.2.720808" APIVersion="3.1.10056.0"?>
+<xdp:xdp xmlns:xdp="http://ns.adobe.com/xdp/" timeStamp="2012-02-04T12:13:21Z" uuid="19477fd8-44eb-43cc-b38c-3b160c4b4c9f">
+<template xmlns="http://www.xfa.org/schema/xfa-template/2.8/">
+   <?formServer defaultPDFRenderFormat acrobat9.0dynamic?>
+   <subform name="form1" layout="tb" locale="en_GB" restoreState="auto">
+      <pageSet>
+         <pageArea name="Page1" id="Page1">
+            <contentArea x="0.25in" y="0.25in" w="8in" h="10.5in"/>
+            <medium stock="letter" short="8.5in" long="11in"/>
+            <?templateDesigner expand 1?></pageArea>
+         <?templateDesigner expand 1?></pageSet>
+      <subform w="8in" h="10.5in">
+         <subform h="0mm" w="41.275mm" x="5mm">
+            <?templateDesigner ScriptInitializers ready:layout:lang=JavaScript;indexChange::lang=JavaScript;docClose:lang=JavaScript;docReady:lang=JavaScript;preSubmit:form:lang=JavaScript;preSave:lang=JavaScript;initialize::lang=JavaScript;validate::lang=JavaScript;exit::lang=JavaScript;postSave:lang=JavaScript;enter::lang=JavaScript;ready:form:lang=JavaScript;prePrint:lang=JavaScript;calculate::lang=JavaScript;postPrint:lang=JavaScript;?>
+            <?templateDesigner allowScriptMergeInXFAF 1?>
+            <bind match="none"/>
+            <event name="event__form_ready" activity="ready" ref="$form">
+               <script contentType="application/x-javascript">// DO NOT MODIFY THE CODE BEYOND THIS POINT - FormReady
+//////////////////////////////////////////////////////////
+// Register the message handler if running on the client.
+//////////////////////////////////////////////////////////
+    // Check to make sure we are running in Acrobat or Reader only 
+    if (xfa.host.name == "Acrobat") {
+        ContainerFoundation_JS.RegisterMessageHandler();
+		ContainerFoundation_JS.notifyInitialized();
+    }
+</script>
+            </event>
+            <variables>
+               <script contentType="application/x-javascript" name="ContainerFoundation_JS">// DO NOT MODIFY THE CODE BEYOND THIS POINT - ContainerFoundation_JS
+/*
+    FormBridge provides a scripting API to access and change information in a PDF form.
+    It supports actions such as getting and setting form data, getting a list
+    of fields, email, and print just to name a few.
+    Messages are sent to this script have the following format:
+        [id][requestName][params...]
+    where:
+        id          is a number supplied by the requestor
+        requestName is the command to perform (see: "FormBridge API command"s below)
+        params      are the parameters for the command
+    The response has the following format:
+        [id][requestName][returnId][returnValue]
+    where:
+        id          is the same number as the request id
+        requestName is the same as the original request name
+        returnId    is a string indicating success or failure (see: "Return identifiers" below)
+        returnValue is the return value of the command (if applicable)
+    Command parameters and return values can be simple values are they can be arrays. 
+    Since the whole messages are passed as arrays, we use special identifires to indicate
+    arrays within arrays (see array identifires).
+*/
+/* Version of the form bridge interface */
+var FORM_BRIDGE_VERSION = "2.0";
+/* FormBridge API commands */
+var R_GET_BRIDGE_VERSION            = "getBridgeVersion";    
+var R_GET_FORM_TYPE                 = "getFormType";        
+var R_GET_DATA                      = "getData";
+var R_SET_DATA                      = "setData";
+var R_GET_SUBMIT_BUTTONS            = "getSubmitButtons";
+var R_GET_INDIRECT_SUBMIT_BUTTONS   = "getIndirectSubmitButtons";
+var R_GET_ALL_FIELDS                = "getAllFieldNames";
+var R_GET_LABELS                    = "getLabels";        
+var R_GET_LIST_ITEMS                = "getListItems";    
+var R_GET_SELECTED_ITEM             = "getSelectedItem";
+var R_SELECT_LIST_ITEM              = "selectListItem";    
+var R_HIDE_FIELDS                   = "hideFields";
+var R_SHOW_FIELDS                   = "showFields";
+var R_EXEC_ACTION                   = "execAction";
+var R_EMAIL_ACTION                  = "emailAction";
+var R_PRINT_ACTION                  = "printAction";
+var R_SAVEAS_ACTION                 = "saveAsAction";
+var R_SUBMIT_ACTION                 = "submitAction";
+var R_GET_FOCUS                     = "getFocus";
+var R_SET_FOCUS                     = "setFocus";
+var R_GET_FIELD_VALUE               = "getFieldValue";
+var R_SET_FIELD_VALUE               = "setFieldValue";
+var R_SET_DATA_FIELDS_LIST          = "setDataFieldsList";
+var R_RESOLVE_SOM_PROPERTIES        = "resolveSOMProperties";
+var R_SET_SOM_PROPERTIES            = "setSOMProperties";
+var R_HAS_SUBMIT_BUTTON             = "hasSubmitButton";
+var R_GET_SUBMIT_TYPE             = "getSubmitType";
+/* Return identifiers used in response messages */
+var SUCCESS                 = "success";
+var E_FAILURE               = "failure";
+var E_BAD_PARM              = "badParm";
+var E_UNSUPPORTED_MSG       = "unsupportedMsg";
+var E_SETDATA_LOADXML       = "E_SETDATA_LOADXML";
+/* Specifying the submit url and type here will override the url and type defined in the form */
+var BRIDGE_SUBMIT_URL       = null;
+var BRIDGE_SUBMIT_TYPE      = null;
+var BRIDGE_SUBMIT_TYPE_FIELD      = "AWS_SUBMIT_TYPE";
+/* Array identifiers used when passing arrays in incoming and outgoing messages */
+var ARRAY_START             = "[---&gt;";
+var ARRAY_END               = "&lt;---]";
+/* The various click events that can exist for a field */
+var clickActivities	 = ["click", "mouseUp", "mouseDown"];
+/* We cache the indirectSubmitButtons so we only retrieve them once */
+var indirectSubmitButtons  = null;
+/* We cache the submitButtons so we only retrieve them once */
+var submitButtons = null;
+/* Indicator that we have initialized sufficiently to really try and communicate */
+/* blocks race condition messages from appearing */
+var nCommunicationOpen	= 0;
+var initTimer			= null;
+var currDoc				= null;
+/**
+ * Install the embedded PDF message handler. This allows the PDF to
+ * process messages from the container. It is not installed if we
+ * are running on the server (i.e. PDFMM or XMLFM).
+ * Store the document in the message handler so it can be accessed 
+ * during message processing as this.doc.
+ */
+function RegisterMessageHandler() {
+    event.target.hostContainer.messageHandler = {
+        // Assigns this document to the message handler.
+        doc: event.target,
+        // gotMessage() handles incoming FormBridge requests
+        onMessage: 
+            function(message) {
+                gotMessage(message, this.doc)
+            },
+        
+        // Message handler error should not be encountered in normal circumstances.
+        // If it occurs, it is is most likely a security error
+        onError:   
+            function(error, message) {
+				if ( message != null &amp;&amp; message[0] == "initialized" &amp;&amp; nCommunicationOpen &lt; 10 ) {
+					app.setTimeOut("xfa.form.resolveNode('$form..ContainerFoundation_JS').notifyInitialized()", 200);
+            	} else {
+                 	app.alert('PDF messageHandler: ' + error + ' ' + message); 
+                }
+            },
+        
+        // Reader will allow external applications to communicate with the
+        // JavaScript contained within the document only if the function below returns
+        // true.  We will allow the communication only if the URL of the web page
+        // trying to communicate with us comes from the same root url
+        onDisclose: 
+            function(htmlURL, pdfURL) {
+            	// Some file URLs have colons appear as an or bar so we translated it back to colons
+            	// Note that the replace function does not work on argument variables so we copy them to temporary variables
+				var htmlURL2 = htmlURL;  
+				var pdfURL2  = pdfURL;  				
+				var htmlURL3 = htmlURL2.replace(/\|/g, ":");
+				var pdfURL3  = pdfURL2 .replace(/\|/g, ":");
+                // Decode the URIs and split them into tokens
+                htmlTokens = decodeURI(htmlURL3).split("/");
+                pdfTokens  = decodeURI(pdfURL3) .split("/");
+                // Normally we compare only the first three tokens e.g. "http:", "" and "server:8080"
+                var compareCount = 3;
+                if (htmlTokens[0] == "file:") {
+                    // In the case of files, we compare the common folders
+                    compareCount = Math.min(htmlTokens.length, pdfTokens.length) - 1;
+                    compareCount = Math.max(compareCount, 2);
+                }
+ 
+                // All the tokens in the compare count must match exactly
+                for (var i=0; i &lt; compareCount; i++) {
+                    if (htmlTokens[i] != pdfTokens[i]) {
+            			console.println("OnDisclose test failed:");
+						console.println("  html:[" + htmlURL + "]");
+            			console.println("  pdf :[" + pdfURL + "]");
+            			console.println("  FAILED (" + i + ") [" + htmlTokens[i] + " vs " + pdfTokens[i] + "].");
+                        return false;
+		    		}
+                }
+				nCommunicationOpen += 1;
+                return true;
+            }    
+        };
+}
+// This function is used to notify the host html that communication is up
+// and available, but it might have to wait for the host to be ready,
+// so it loops until it is available.
+function notifyInitialized()
+{
+	if ( xfa.host.version &gt;= 8.0 ) {
+		nCommunicationOpen += 1;
+		var msg = "initialized";
+		if ( nCommunicationOpen &gt; 10 ) {
+  			console.println("notifyInitialized(): " + nCommunicationOpen);
+  			return;
+		}
+		if ( currDoc == null ) {
+			currDoc = event.target;
+		}
+		if ( currDoc &amp;&amp; currDoc.hostContainer &amp;&amp; currDoc.hostContainer.postMessage )  {
+  			try {
+  				currDoc.hostContainer.postMessage([msg, nCommunicationOpen]);
+  			} catch (exception) {
+  				if ( nCommunicationOpen &gt; 1 ) {
+  					console.println("PM R: " + nCommunicationOpen + " : " + exception.toString());
+  				}
+  				app.setTimeOut("xfa.form.resolveNode('$form..ContainerFoundation_JS').notifyInitialized()", 200);
+  			}
+  		}
+	}
+}
+// Handle incoming messages.
+// This breaks them apart into (message id, request, params) and forwards  
+// the request to the corresponding function.
+// It then creates and sends the response.
+function gotMessage(inMessage, doc) {
+    // Read the request
+    var msgId     = inMessage.shift();
+    var request   = inMessage.shift();
+    var param1    = getParam(inMessage);
+    var param2    = getParam(inMessage);
+    var param3    = getParam(inMessage);
+    var param4    = getParam(inMessage);
+    var returnId  = SUCCESS;
+    var returnVal = null;
+    if ( xfa.host.name != "Flash" ) {
+        // Forward the request to the corresponding function
+        try {
+            var override = sanitizeRequest(request);
+            if ( override != null ) {
+               returnVal = eval(request + "_FormBridge(doc, param1, param2, param3, param4);" );
+            } else {
+              switch (request) {
+                case R_GET_BRIDGE_VERSION:          returnVal = bridgeVersion();            break;
+                case R_GET_FORM_TYPE:               returnVal = formType;                   break;
+                case R_GET_DATA:                    returnVal = getData();                  break;
+                case R_GET_SUBMIT_BUTTONS:          returnVal = getSubmitButtons();         break;
+                case R_GET_INDIRECT_SUBMIT_BUTTONS: returnVal = getIndirectSubmitButtons(); break;
+                case R_GET_ALL_FIELDS:              returnVal = getAllFieldNames();         break;
+                case R_GET_LABELS:                  returnVal = getLabels(param1);          break;
+                case R_GET_LIST_ITEMS:              returnVal = getListItems(param1);       break;
+                case R_GET_SELECTED_ITEM:           returnVal = getSelectedItem(param1);    break;
+                case R_SELECT_LIST_ITEM:            selectListItem(param1, param2);         break;
+                case R_SET_DATA:                    setData(param1);            	    	break;
+                case R_HIDE_FIELDS:                 hideFields(param1);                     break;
+                case R_SHOW_FIELDS:                 showFields(param1);                     break;
+                case R_EXEC_ACTION:                 execAction(param1);                     break;
+                case R_EMAIL_ACTION:                emailAction(doc, param1);               break;
+                case R_PRINT_ACTION:                printAction(doc, param1);               break;
+                case R_SAVEAS_ACTION:               saveAsAction(doc, param1);              break;
+                case R_SUBMIT_ACTION:               submitAction(doc, param1, param2);      break;
+                case R_GET_FOCUS:                   returnVal = getFocus();                 break;
+                case R_SET_FOCUS:                   setFocus(param1);                       break;
+                case R_GET_FIELD_VALUE:             returnVal = getFieldValue(param1);      break;
+                case R_SET_FIELD_VALUE:             setFieldValue(param1, param2, param3);  break;
+				case R_SET_DATA_FIELDS_LIST:	    setDataFieldsList(param1, param2, param3, param4);	   	break;
+                case R_RESOLVE_SOM_PROPERTIES:      returnVal = resolveSOMProperties(param1, param2);   	break;
+                case R_SET_SOM_PROPERTIES:          returnVal = setSOMProperties(param1, param2, param3);   break;
+		case R_HAS_SUBMIT_BUTTON:           returnVal = hasSubmitButton();	    break;
+				case R_GET_SUBMIT_TYPE:           returnVal = getSubmitType();	    break;
+                default:                            returnId = E_UNSUPPORTED_MSG;           break;
+              }
+            }
+        } catch(exception) {
+            returnId  = E_FAILURE;
+            returnVal = exception;
+        }
+        if (returnId != SUCCESS || (request != R_EXEC_ACTION &amp;&amp; request != R_SUBMIT_ACTION))
+        {
+            postToFormBridgeInternal(doc, msgId, request, returnId, returnVal);
+        }
+    }
+}
+// Internal Helper function to communicate calls to the Host Guide.
+function postToFormBridgeInternal(doc, msgId, request, returnId, returnVal) {
+	var outMessage = new Array();
+    outMessage.push(msgId);
+    outMessage.push(request);
+    outMessage.push(returnId);
+    if (returnVal != null) {
+		// include array delimiters, if any, in the response
+        if (returnVal instanceof Array) {
+          	outMessage.push(ARRAY_START);
+          	for (var i=0; i&lt;returnVal.length; i++) {
+            	outMessage.push(returnVal[i]);
+            }
+            outMessage.push(ARRAY_END);
+        } else {
+            outMessage.push(returnVal);
+        }
+    }
+    doc.hostContainer.postMessage(outMessage);
+}
+/** 
+ *   The parameter may be an array; if so, this function removes the 
+ *   array delimiters and returns its contents as a single array-type object.
+ */
+function getParam(inMessage) {
+    if (inMessage.length == 0) {
+        return null;
+    }
+    // If the parameter is not an array, simply return its value
+    var param = inMessage.shift();
+    if (param != ARRAY_START) {
+        return param;
+    }
+    // Create a new array and copy the values into it
+    param = new Array();
+    while (inMessage.length&gt;0 &amp;&amp; inMessage[0]!=ARRAY_END) {
+        param.push(inMessage.shift());
+    }
+    // Get rid of the ARRAY_END delimiter
+    if (inMessage.length != 0) {
+        inMessage.shift(); 
+    }
+    return param;
+}
+/****************************************************************************/
+/*      Handlers for Request messages                                       */
+/****************************************************************************/
+/* Return the Form Bridge version */
+function bridgeVersion(){
+    return FORM_BRIDGE_VERSION;
+}
+/** Extract the form data and remove the newlines */
+function getData() { 
+    // Pad out the response to fix the Firefox 3.5.x 'off by one issue'.	
+    return xfa.datasets.saveXML() + "\n";
+}
+/** Set the data dom with the passed data */
+function setData(data) {
+	var xfaData = data;	
+	
+	// For certain forms XFA will not allow updates to the entire datasets so the data only portion 
+	// must be extracted.  
+	// The XML passed in can come in different flavours that have to be massaged in order to get XFA to accept
+	// the data.  
+	
+	// Check for standard &lt;xfa:data&gt; first
+	var searchFor = "xfa:data";
+	var xfaDataStart = data.indexOf("&lt;" + searchFor, 50); // Start past the ever present &lt;xfa:datasets tag
+	var xfaDataEnd   = 0;
+	if ( xfaDataStart &gt;= 0 ) {
+		xfaDataEnd = data.indexOf("&lt;/" + searchFor, xfaDataStart);
+		var xfaNS = (data.indexOf("xmlns:xfa", xfaDataStart) &lt; 0)?"xmlns:xfa=\"http://www.xfa.org/schema/xfa-data/1.0/\"":"";
+		xfaData    =  "&lt;xfa:data " + xfaNS
+						+ data.substring(xfaDataStart + searchFor.length + 1, xfaDataEnd)
+					+ "&lt;/xfa:data&gt;";
+	} else {  // Did not find &lt;xfa:data; Check for user defined &lt;data&gt; second
+		searchFor = "data";
+		xfaDataStart = data.indexOf("&lt;" + searchFor, 0);
+		if ( xfaDataStart &gt;= 0 ) {
+			var i = xfaDataStart;
+			while (i &gt;= 0) {	// Find the *last* &lt;/data
+				xfaDataEnd = i;
+				i = data.indexOf("&lt;/" + searchFor, i+1);
+			}
+			xfaData = "&lt;" + searchFor + data.substring(xfaDataStart + searchFor.length + 1, xfaDataEnd) + "&lt;/" + searchFor + "&gt;";
+			
+			// Have to remove the "FORMSERVER" variables as well as their enclosing &lt;root&gt;..&lt;/root&gt;
+			// since loadXML will fail if they are left in
+            var i = xfaData.search( /&lt;(FS[A-Z]+)_\s*\/?&gt;/ ); // Any &lt;FSXXXX_ [/]&gt; tags?
+			if (i &gt;= 0) {
+				xfaData = xfaData.replace( /&lt;(FS[A-Z]+)_\s*&gt;.*&lt;\/\1_\s*&gt;\s*/g   ,   "" );
+				xfaData = xfaData.replace( /&lt;(FS[A-Z]+)_\s*\/&gt;\s*/g             ,   "" );
+				xfaData = xfaData.replace( /&lt;root\s*&gt;\s*&lt;\/root\s*&gt;\s*/g        ,   "" );
+				xfaData = xfaData.replace( /&lt;root\s*\/&gt;\s*/g                    ,   "" );
+			}
+		}	
+   	}
+   	
+   	
+	try {
+ 	    // Call XFA to load the sanitized data and force a remerge
+   	    xfa.datasets.data.loadXML(xfaData, 1, 1);	
+	} catch (err)	{
+		throw E_SETDATA_LOADXML + ": " + err;
+	}
+   	xfa.form.remerge();
+}
+/**
+ * Retrieve the value associated with a single form field. 
+ *
+ * @param somExpression Full path to the XML data node.
+ */
+function getFieldValue(somExpression) 
+{    
+    var field = xfa.form.resolveNode(somExpression);
+    if ( field != null )
+        return field.rawValue;
+    else
+        return "";
+}
+/**
+ * Set the XML value associated with a single form field. 
+ *
+ * @param somExpression Full path to the XML data node.
+ * @param new Value Replacement value for the XML data node.
+ */
+function setFieldValue(somExpression, type, newValue) 
+{
+	setFieldValue2(somExpression, type, newValue, true)
+}
+/**
+ * Set the XML value associated with a single form field, with optional remerge. 
+ *
+ * @param somExpression Full path to the XML data node.
+ * @param new Value Replacement value for the XML data node.
+ */
+function setFieldValue2(somExpression, type, newValue, remerge) 
+{
+    var field = xfa.form.resolveNode(somExpression);
+    if ( field != null ) {
+        switch (type) {
+            case "booleanValue":
+            case "selected":
+            case "selectedItems":
+            case "dateValue":
+            case "rawValue":
+            default:
+				var i = 0;
+                if (newValue.indexOf("&lt;exData") == 0)
+                {
+                	var i = newValue.indexOf("&lt;", 2);
+                	var j = newValue.indexOf("&lt;/exData&gt;");
+                	newValue = newValue.substring(i, j-1); // Strip off the &lt;exdata&gt; enclosure
+					i = 1;
+                }
+                else if (newValue.indexOf("&lt;body") == 0)
+					i = 1;
+                else if (newValue.indexOf("&lt;P") == 0)
+					i = 1;
+                else if (newValue.indexOf("&lt;p") == 0)
+					i = 1;
+				if (i == 1) {
+  					try {
+						field.value.exData.loadXML(newValue, 0, 1);
+  					} catch (err) {
+  						field.rawValue = newValue;
+  					}
+  				} 
+                else
+                {
+                    field.rawValue = newValue;
+                }
+        }
+        if ( remerge ) {
+            xfa.datasets.saveXML();
+            xfa.form.remerge();
+        }
+    }
+}
+/* Set the values for the fields in the list as well as sync the subform occurs information */
+function setDataFieldsList(subforms, occurs, fields, values) {
+	var i;
+	var allowRemerge = true;
+	// Step through each subform's instances and set their occurrences
+    for (i=0; i&lt;subforms.length; i++) {
+        var subform = resolveFormNode(subforms[i]);
+    	if ( subform != null ) {
+	    	try {
+				// Call XFA to load the subform instance data but fail silently and continue if it can't.
+   				subform.setInstances(occurs[i]); 	
+	    	} catch (err)	{
+				;
+	    	}
+        }    
+    }   
+    // Step through the fields and set their values
+    for (i=0; i&lt;fields.length; i++) {
+		try {    
+  			// Call XFA to load the field data but fail silently and continue if we can't resolve the field's node, 
+  			// also don't update signature fields.
+  			var sigfield = resolveNode(fields[i] + ".ui.signature");
+  			if ( sigfield == null ) {
+  				// check to make sure the field is not locked by a signature. 
+  				var properties = new Array();
+  				properties.push("locked");
+  				var properties = resolveSOMProperties(fields[i], properties);
+  				if ( properties[1] == "locked:locked" ) {
+  					allowRemerge = false;
+  				} else {
+  					setFieldValue2(fields[i], null, values[i], false);
+  				}
+  			}	
+  	    } catch (err) {
+  	    	;
+        }
+    }
+    if ( allowRemerge ) {
+   		xfa.datasets.saveXML();
+   		xfa.form.remerge();
+    }
+}
+/** Get the submit actions. Returns an array of som expressions */
+function getSubmitButtons() {
+    if (submitButtons != null) {
+        return submitButtons;
+    }
+    var allFields           = getAllFields();
+    var buttons             = getButtons(allFields);
+    var directSubmitButtons = getDirectSubmitButtons(buttons);
+    var allButtons          = getAllSubmitButtons(buttons, directSubmitButtons);
+    submitButtons           = toSOMs(allButtons);
+    return submitButtons;
+}
+/** Get the indirect submit actions. Returns an array of som expressions */
+function getIndirectSubmitButtons() {
+    if (indirectSubmitButtons != null) {
+        return indirectSubmitButtons;
+    }
+    var allFields           = getAllFields();
+    var buttons             = getButtons(allFields);
+    var directSubmitButtons = getDirectSubmitButtons(buttons);
+    var allButtons          = getAllIndirectSubmitButtons(buttons, directSubmitButtons);
+    indirectSubmitButtons   = toSOMs(allButtons);
+    return indirectSubmitButtons;
+}
+/** Return all of the field names in the form */
+function getAllFieldNames() {
+    var fieldSOMs = new Array();
+    for (var page=0; page&lt;xfa.layout.absPageCount(); page++) {
+        var fields = xfa.layout.pageContent(page, "field");
+        for (var i=0; i&lt;fields.length; i++) {
+            var som = fields.item(i).somExpression;
+            som = som.replace(/\[0\]/g, "");
+            som = som.replace(/xfa.form./g, "");
+            som = som.replace(/#subform./g, "");
+            fieldSOMs[i] = som;
+        }
+    }
+    return fieldSOMs;
+}
+/** Return the labels for the supplied list of fields */
+function getLabels(fields) {
+    var names = new Array();
+    for (var i=0; i&lt;fields.length; i++) {
+        var field = resolveFormNode(fields[i]);
+        names.push(field.caption.value.text.value);    
+    }
+    return names;
+}
+/* Return the list items for a list field */
+function getListItems(fieldName) {
+    var listItems = new Array();
+    var items = xfa.resolveNodes("$form.." + fieldName + ".#items.#text[*]");
+    for (var i=0; i&lt;items.length; i++) {
+        listItems.push(items.item(i).value);
+    }
+    return listItems;
+}
+/** Get the selected item in a list field */
+function getSelectedItem(fieldName) {
+    var list = resolveFormNode(fieldName);
+    return list.rawValue;
+}
+/* Select a list item of a list field */
+function selectListItem(fieldName, listItem) {
+    var list = resolveFormNode(fieldName);
+    list.rawValue = listItem;
+}
+/* Hide the fields in the supplied list of fields */
+function hideFields(fields) {
+    for (var i=0; i&lt;fields.length; i++) {
+        var field = resolveFormNode(fields[i]);
+        if(field.presence=="visible"){
+               field.presence="invisible"; 
+        }    
+    }
+}
+/* Show the fields in the supplied list of fields */
+function showFields(fields) {
+    for (var i=0; i&lt;fields.length; i++) {
+        var field = resolveFormNode(fields[i]);
+        field.presence="visible";    
+    }
+}
+/** Execute an action e.g. click */
+function execAction(buttonName) {
+    var button = resolveFormNode(buttonName);
+    if (button != null) {
+        var event = getClickEvent(button);
+        if (event != null) {
+        	setFocus(null);  // force current field focus out in 8.1 + readers (null op in previous versions)
+            button.execEvent(event.activity);
+        }
+    }
+}
+/** Invoke the standard Email action */
+function emailAction(doc, param1) {
+    doc.mailDoc(true, "");
+}
+/** Invoke the standard Print action */
+function printAction(doc, param1) {
+    app.execMenuItem("Print", doc);
+}
+/** Invoke the standard SaveAs action */
+function saveAsAction(doc, defaultFile) {
+    doc.documentFileName = defaultFile;
+    app.execMenuItem("SaveAs", doc);
+}
+/** Invoke the standard Submit action */
+function submitAction(doc, url, type) {
+    if ( BRIDGE_SUBMIT_URL  != null ) url  = BRIDGE_SUBMIT_URL;
+    if ( BRIDGE_SUBMIT_TYPE != null ) type = BRIDGE_SUBMIT_TYPE;
+    if ( type == null ) type = "PDF";
+    if (url != null) {
+        setFocus(null);  // force current field focus out in 8.1 + readers (null op in previous versions)
+//      doc.submitForm({cURL: url, bEmpty: true, cSubmitAs: type, cCharset: "utf-8"});    
+        doc.submitForm({cURL: url, cSubmitAs: type});    
+    }    
+}
+/** Get the focus from XFA  */
+function getFocus() {
+    if ( xfa.host.getFocus ) 
+        return xfa.host.getFocus().somExpression;
+    else 
+        return "unsupported";
+}
+/** Set the focus in XFA  */
+function setFocus(som) {
+    if ( xfa.host.setFocus ) {
+        if ( som == null ) {
+            if ( xfa.host.appType == "Reader" || xfa.host.name == "Acrobat" ) {
+                if ( xfa.host.version &gt;= "8.1" ) {
+                    xfa.host.setFocus(som);
+                }
+            }
+        } else {
+            xfa.host.setFocus(som);
+        }
+    }
+}
+/**
+ * Retrieve the list of value(s) associated with properties of the SOM object. 
+ *
+ * @param somExpression Full pathway to the XML node.
+ */
+function resolveSOMProperties(somExpression, properties) 
+{   
+    var values = new Array();
+    var value;
+    values.push( "som:" + somExpression );
+    var obj = resolveFormNode(somExpression);
+    if ( obj != null ) {
+		for (var i=0; i&lt;properties.length; i++) { 
+			if ( properties[i] == "objectXml" ) {
+			    value = obj.saveXML();
+			} else if ( properties[i] == "object" ) {
+			    value = obj;
+			} else if ( properties[i] == "locked" ) {
+			    var locked = "open";
+			    if ( obj.access == "readOnly" ) {
+				try {
+					obj.access = "open";
+			    	} catch (err)	{
+						;
+			    	}
+					if ( obj.access == "readOnly" ) {
+						locked = "locked";
+					} else {
+						obj.access = "readOnly";
+					}
+			    }
+			    value = locked;
+			} else {
+			    value = obj.getAttribute( properties[i] );
+			}
+			values.push( (properties[i] + ":" + value) ) ;
+		}
+    }
+    return values;
+}
+/**
+ * Set the list of value(s) associated with properties supplied for the SOM object. 
+ *
+ * @param somExpression Full path to the XML node.
+ */
+function setSOMProperties(somExpression, properties, values) 
+{   
+    var obj = resolveFormNode(somExpression);
+    var ret = true;
+    if ( obj != null ) {
+		for (var i=0; i&lt;properties.length; i++) { 
+			if ( properties[i] == "objectXml" ) {
+		   		obj.loadXML(values[i], 1, 1);
+			} else if ( properties[i] == "object" ) {
+		    	obj = values[i];
+			} else {
+		    	obj.setAttribute( values[i], properties[i] );
+			}
+		}
+    }
+    return ret;
+}
+/******************************************************************************/
+/*      Utility functions                                                     */
+/******************************************************************************/
+/** Convenience function for resolving a form node with 2 additional levels of resolution */
+function resolveFormNode(fieldName) {
+    var formNode = xfa.resolveNode("$form.." + fieldName);
+    if ( formNode == null &amp;&amp; fieldName.indexOf(".") &gt; 0 ) {
+		fieldName = fieldName.substr(fieldName.indexOf(".")+1);
+		formNode  = xfa.resolveNode("$form.." + fieldName);  
+    	if ( formNode == null &amp;&amp; fieldName.indexOf(".") &gt; 0 ) {
+    		fieldName = fieldName.substr(fieldName.indexOf(".")+1);
+			formNode  = xfa.resolveNode("$form.." + fieldName);  
+		}
+    }
+    return formNode;  
+}
+/** Return all of the fields in the form */
+function getAllFields() {
+    var allFields = new Array();
+    for (var page=0; page&lt;xfa.layout.absPageCount(); page++) {
+        var pageFields = xfa.layout.pageContent(page, "field");
+        for (var i=0; i&lt;pageFields.length; i++) {
+            allFields.push(pageFields.item(i));
+        }
+    }
+    return allFields; 
+}
+/** Create an array of field SOM expressions */
+function toSOMs(fields) {
+    var fieldSOMs = new Array();
+    for (var i=0; i&lt;fields.length; i++) {
+        var som = fields[i].somExpression;
+        som = som.replace(    /^xfa(\[.\])?\./g, "");
+        som = som.replace(   /^form(\[.\])?\./g, "");
+        som = som.replace(/#subform(\[0\])?\./g, "");
+        som = som.replace(/\[0\]/g, "");
+        fieldSOMs.push(som);
+    }
+    return fieldSOMs;
+}
+/** Return the buttons in the passed field array */
+function getButtons(fields) {
+        var buttons = new Array();
+    var field;
+    var sUIClassName;
+    for (var i=0; i&lt;fields.length; i++) {
+        field = fields[i];
+ 
+      	sUIClassName = field.ui.oneOfChild.className;
+        if (sUIClassName == "button")
+        {
+            buttons.push(field);
+        }
+    }
+    return buttons;
+}
+/** Return the visible buttons in the passed field array */
+function getVisibleButtons(buttons) {
+    var visibleButtons = new Array();
+    for (var i=0; i&lt;buttons.length; i++) {
+        var button = buttons[i];
+        if (button.presence!="invisible" &amp;&amp; button.presence!="hidden") {
+            visibleButtons.push(button);
+        }
+    }
+    return visibleButtons;
+}
+/** Return the direct submit buttons in the passed buttons array */
+function getDirectSubmitButtons(buttons) {
+    var direct = new Array();
+    for (var i=0; i&lt;buttons.length; i++) {
+        var button = buttons[i];
+        if (getSubmitEvent(button) != null) {
+            direct.push(button);
+        }
+    }
+    return direct;
+}
+/** Return the submit event, if any, for this button */
+function getSubmitEvent(button) {
+    var event = getClickEvent(button);
+    if (event!=null &amp;&amp; isSubmitEvent(event)) {
+        return event;
+    }
+    return null;
+}
+/** Return the Click/MouseUp/MouseDown event, if any, for this button */
+function getClickEvent(button) {
+    var events = xfa.resolveNodes(button.somExpression + ".#event[*]");
+    for (var i=0; i&lt;clickActivities.length; i++) {
+        var event = getEvent(events, clickActivities[i]);
+        if (event!=null) {
+            return event;
+        }
+    }
+    return null;
+}
+/** Find the event handling a certain activity */
+function getEvent(events, activity) {
+    for (var i=0; i&lt;events.length; i++) {
+        if (events.item(i).activity == activity) {
+            return events.item(i);
+        }
+    }
+    return null;
+}
+/** Return true if the event is a submit event */
+function isSubmitEvent(event) {
+    var sEventClassName = event.oneOfChild.className;
+    if (sEventClassName == "submit")
+    {
+        return true;
+    }
+     
+    if (sEventClassName == "script")
+    {
+        var script = event.script.value;
+        if (script.indexOf(".exportData")!=-1)
+        {
+            return true;
+        }
+    }
+       
+    return false;
+}
+/** Return all direct submit buttons */
+function getAllSubmitButtons(visibleButtons, directSubmitButtons) {
+    var allButtons = new Array();
+    for (var i=0; i&lt;visibleButtons.length; i++) {
+        var button = visibleButtons[i];
+        if (contains(button, directSubmitButtons)) {
+	    	if ( !repeatableParent(button) ) {
+                allButtons.push(button);
+	    	}
+        } 
+    }
+    return allButtons;
+}
+/** Return all indirect submit buttons */
+function getAllIndirectSubmitButtons(visibleButtons, directSubmitButtons) {
+    var allButtons = new Array();
+    for (var i=0; i&lt;visibleButtons.length; i++) {
+        var button = visibleButtons[i];
+        // check for indirect submit references */
+        var indirect = getIndirectSubmitButton(button, directSubmitButtons);
+        if (indirect != null) {
+	    	if ( !repeatableParent(indirect) ) {
+                allButtons.push(indirect);
+	    	}
+        }
+        
+    }
+    return allButtons;
+}
+/** Return the submit event, if any, for this button */
+function getIndirectSubmitButton(button, directSubmitButtons) {
+    var events = xfa.resolveNodes(button.somExpression + ".#event[*]");
+    for (var i=0; i&lt;clickActivities.length; i++) {
+        var event = getEvent(events, clickActivities[i]);
+        if (event!=null &amp;&amp; isIndirectSubmitEvent(event, directSubmitButtons)) {
+            return button;
+        }
+    }
+    return null;
+}
+/** Return true if the event is an indirect submit event */
+function isIndirectSubmitEvent(event, directSubmitButtons) {
+ 	var sEventClassName = event.oneOfChild.className;
+   
+    if (sEventClassName == "script") {
+    	var script =  event.script.value;
+        for (var i=0; i&lt;directSubmitButtons.length; i++) {
+            var button = directSubmitButtons[i];
+            if (script.indexOf(button.name + ".execEvent") != -1) {
+        
+                return true;
+            }
+        }
+    }
+    return false;
+}
+/** Return true if the the item is contained in the array */
+function contains(item, array) {
+    for (var i=0; i&lt;array.length; i++) {
+        if (item === array[i]) {
+            return true;
+        }
+    }
+    return false;
+}
+/** Return true if any parent object has a max occurs value greater than 1 */
+function repeatableParent(obj) {
+	var repeatable = false;
+	while (obj.parent != null) {
+		if ( obj.parent.className == "subform" || obj.parent.className == "subformSet" ) {
+			if (obj.parent.occur.max == -1 || obj.parent.occur.max &gt; 1) {
+				repeatable = true;
+				break;
+			}	
+		}
+		obj = obj.parent;
+	}
+	return repeatable;
+}
+/** Return true if there are submit buttons on the form */
+function hasSubmitButton() {	
+	var allFields             	= getAllFields();    
+	var buttons                 = getButtons(allFields);
+    var directSubmitButtons 	= getDirectSubmitButtons(buttons);
+    
+    var allButtons = new Array();
+    for (var i=0; i&lt;buttons.length; i++) {
+        var button = buttons[i];
+        if (contains(button, directSubmitButtons)) {
+		    return true;
+        } 
+    }
+    
+    for (var i=0; i&lt;buttons.length; i++) {
+        var button = buttons[i];
+        // check for indirect submit references */
+        var indirect = getIndirectSubmitButton(button, directSubmitButtons);
+        if (indirect != null) {
+		    return true;
+        }
+        
+    }
+    return false;
+}
+
+function getSubmitType()
+{
+	var submitType = null;
+	submitType = getFieldValue("$form.." + BRIDGE_SUBMIT_TYPE_FIELD);
+	if(submitType == null || submitType == "")
+	{
+		var allFields             	= getAllFields();    
+		var buttons                 = getButtons(allFields);
+	    var directSubmitButtons 	= getDirectSubmitButtons(buttons);
+	    if(directSubmitButtons &amp;&amp; directSubmitButtons.length ==1)
+	    {
+	    	var event = getClickEvent(directSubmitButtons[0]);
+	    	if(event &amp;&amp; event.submit)
+	    		submitType = event.submit.format;
+	    	else
+	    		submitType = "UNKNOWN";
+	    }
+	    else{
+	    	submitType = "UNKNOWN";
+	    }
+	}
+	
+	return submitType;
+
+}
+
+/* This function is used to make sure the function request sent in is just a name not some set of code, and that it exists */
+function sanitizeRequest(request) {
+   	if ( request.indexOf("{") &gt;= 0 )
+		return null;
+	else if ( request.indexOf("(") &gt;= 0 )	
+		return null;
+	else if ( request.indexOf(" ") &gt;= 0 )
+		return null;
+	
+	try {
+        var ret = eval( "typeof( " + request + "_FormBridge)" );
+        if ( ret != "function" ) {
+            request = null;
+        }
+	} catch(exception) {
+       	request = null;
+   	}
+   	return request;
+}
+var sendMsgId = 0;
+/* Helper function to allow PDF processing to call the Host Guide. */
+function postToFormBridge(doc, request, data, callback) {
+	if (callback == null ) callback = SUCCESS;
+	postToFormBridgeInternal(doc, sendMsgId++, request, callback, data);
+}
+</script>
+               <?templateDesigner expand 1?></variables>
+            <?templateDesigner expand 1?></subform>
+      </subform>
+      <proto/>
+      <desc>
+         <text name="version">9.0.0.2.20100902.2.720808</text>
+         <text name="description">Test Form 1</text>
+      </desc>
+      <?templateDesigner expand 1?></subform>
+   <?templateDesigner DefaultPreviewDynamic 1?>
+   <?templateDesigner DefaultRunAt client?>
+   <?templateDesigner Grid show:1, snap:1, units:0, color:ff8080, origin:(0,0), interval:(125000,125000)?>
+   <?templateDesigner FormTargetVersion 28?>
+   <?templateDesigner DefaultLanguage JavaScript?>
+   <?acrobat JavaScript strictScoping?>
+   <?templateDesigner Zoom 96?>
+   <?templateDesigner Rulers horizontal:1, vertical:1, guidelines:1, crosshairs:0?>
+   <?templateDesigner dciEncryptionHint 0?>
+   <?templateDesigner dciCommentingHint 0?>
+   <?templateDesigner dciReader91SubmitHint 1?>
+   <?templateDesigner dciReader91SubmitFormatHint xdp?>
+   <?templateDesigner SaveTaggedPDF 0?>
+   <?templateDesigner SavePDFWithEmbeddedFonts 0?>
+   <?templateDesigner SavePDFWithLog 0?></template>
+<config xmlns="http://www.xfa.org/schema/xci/2.8/">
+   <agent name="designer">
+      <!--  [0..n]  -->
+      <destination>pdf</destination>
+      <pdf>
+         <!--  [0..n]  -->
+         <fontInfo/>
+      </pdf>
+   </agent>
+   <present>
+      <!--  [0..n]  -->
+      <destination>pdf</destination>
+      <pdf>
+         <!--  [0..n]  -->
+         <fontInfo>
+            <embed>0</embed>
+         </fontInfo>
+         <tagged>0</tagged>
+         <version>1.7</version>
+         <adobeExtensionLevel>3</adobeExtensionLevel>
+      </pdf>
+      <xdp>
+         <packets>*</packets>
+      </xdp>
+   </present>
+</config>
+<localeSet xmlns="http://www.xfa.org/schema/xfa-locale-set/2.7/">
+   <locale name="en_GB" desc="English (United Kingdom)">
+      <calendarSymbols name="gregorian">
+         <monthNames>
+            <month>January</month>
+            <month>February</month>
+            <month>March</month>
+            <month>April</month>
+            <month>May</month>
+            <month>June</month>
+            <month>July</month>
+            <month>August</month>
+            <month>September</month>
+            <month>October</month>
+            <month>November</month>
+            <month>December</month>
+         </monthNames>
+         <monthNames abbr="1">
+            <month>Jan</month>
+            <month>Feb</month>
+            <month>Mar</month>
+            <month>Apr</month>
+            <month>May</month>
+            <month>Jun</month>
+            <month>Jul</month>
+            <month>Aug</month>
+            <month>Sep</month>
+            <month>Oct</month>
+            <month>Nov</month>
+            <month>Dec</month>
+         </monthNames>
+         <dayNames>
+            <day>Sunday</day>
+            <day>Monday</day>
+            <day>Tuesday</day>
+            <day>Wednesday</day>
+            <day>Thursday</day>
+            <day>Friday</day>
+            <day>Saturday</day>
+         </dayNames>
+         <dayNames abbr="1">
+            <day>Sun</day>
+            <day>Mon</day>
+            <day>Tue</day>
+            <day>Wed</day>
+            <day>Thu</day>
+            <day>Fri</day>
+            <day>Sat</day>
+         </dayNames>
+         <meridiemNames>
+            <meridiem>AM</meridiem>
+            <meridiem>PM</meridiem>
+         </meridiemNames>
+         <eraNames>
+            <era>BC</era>
+            <era>AD</era>
+         </eraNames>
+      </calendarSymbols>
+      <datePatterns>
+         <datePattern name="full">EEEE, D MMMM YYYY</datePattern>
+         <datePattern name="long">D MMMM YYYY</datePattern>
+         <datePattern name="med">D MMM YYYY</datePattern>
+         <datePattern name="short">DD/MM/YYYY</datePattern>
+      </datePatterns>
+      <timePatterns>
+         <timePattern name="full">HH:MM:SS Z</timePattern>
+         <timePattern name="long">HH:MM:SS Z</timePattern>
+         <timePattern name="med">HH:MM:SS</timePattern>
+         <timePattern name="short">HH:MM</timePattern>
+      </timePatterns>
+      <dateTimeSymbols>GyMdkHmsSEDFwWahKzZ</dateTimeSymbols>
+      <numberPatterns>
+         <numberPattern name="numeric">z,zz9.zzz</numberPattern>
+         <numberPattern name="currency">$z,zz9.99</numberPattern>
+         <numberPattern name="percent">z,zz9%</numberPattern>
+      </numberPatterns>
+      <numberSymbols>
+         <numberSymbol name="decimal">.</numberSymbol>
+         <numberSymbol name="grouping">,</numberSymbol>
+         <numberSymbol name="percent">%</numberSymbol>
+         <numberSymbol name="minus">-</numberSymbol>
+         <numberSymbol name="zero">0</numberSymbol>
+      </numberSymbols>
+      <currencySymbols>
+         <currencySymbol name="symbol">£</currencySymbol>
+         <currencySymbol name="isoname">GBP</currencySymbol>
+         <currencySymbol name="decimal">.</currencySymbol>
+      </currencySymbols>
+      <typefaces>
+         <typeface name="Myriad Pro"/>
+         <typeface name="Minion Pro"/>
+         <typeface name="Courier Std"/>
+         <typeface name="Adobe Pi Std"/>
+         <typeface name="Adobe Hebrew"/>
+         <typeface name="Adobe Arabic"/>
+         <typeface name="Adobe Thai"/>
+         <typeface name="Kozuka Gothic Pro-VI M"/>
+         <typeface name="Kozuka Mincho Pro-VI R"/>
+         <typeface name="Adobe Ming Std L"/>
+         <typeface name="Adobe Song Std L"/>
+         <typeface name="Adobe Myungjo Std M"/>
+      </typefaces>
+   </locale>
+</localeSet>
+<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 4.2.1-c043 52.398682, 2009/08/10-13:00:47        ">
+   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <rdf:Description xmlns:xmp="http://ns.adobe.com/xap/1.0/" rdf:about="">
+         <xmp:MetadataDate>2012-02-04T12:13:21Z</xmp:MetadataDate>
+         <xmp:CreatorTool>Adobe LiveCycle Designer ES 9.0</xmp:CreatorTool>
+      </rdf:Description>
+      <rdf:Description xmlns:pdf="http://ns.adobe.com/pdf/1.3/" rdf:about="">
+         <pdf:Producer>Adobe LiveCycle Designer ES 9.0</pdf:Producer>
+      </rdf:Description>
+      <rdf:Description xmlns:xmpMM="http://ns.adobe.com/xap/1.0/mm/" rdf:about="">
+         <xmpMM:DocumentID>uuid:19477fd8-44eb-43cc-b38c-3b160c4b4c9f</xmpMM:DocumentID>
+      </rdf:Description>
+      <rdf:Description xmlns:dc="http://purl.org/dc/elements/1.1/" rdf:about="">
+         <dc:description>
+            <rdf:Alt>
+               <rdf:li xml:lang="x-default">Test Form 1</rdf:li>
+            </rdf:Alt>
+         </dc:description>
+      </rdf:Description>
+      <rdf:Description xmlns:desc="http://ns.adobe.com/xfa/promoted-desc/" rdf:about="">
+         <desc:version rdf:parseType="Resource">
+            <rdf:value>9.0.0.2.20100902.2.720808</rdf:value>
+            <desc:ref>/template/subform[1]</desc:ref>
+         </desc:version>
+      </rdf:Description>
+   </rdf:RDF>
+</x:xmpmeta></xdp:xdp>

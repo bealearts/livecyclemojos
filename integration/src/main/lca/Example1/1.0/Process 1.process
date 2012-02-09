@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sup:process deprecated="false" monitor-access="false" transaction-timeout="-1" transaction-propagation="REQUIRES NEW" type="transient" pof-object-type="" name="Process 1" id="P1328357340786" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:sup="http://adobe.com/workflow/template/support"><sup:title>Process 1</sup:title><sup:description>A Test LCA</sup:description><sup:variables><sup:variable visibleInUI="false" searchable="false" description="" title="" pof-attribute="create_time" type="xs:dateTime" required="true" configuration="false" in="false" out="false" name="create_time" id="V1328357351480"><sup:value xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/></sup:variable><sup:variable visibleInUI="false" searchable="false" description="" title="" pof-attribute="creator_id" type="xs:string" required="true" configuration="false" in="false" out="false" name="creator_id" id="V1328357351481"><sup:value xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/></sup:variable><sup:variable visibleInUI="false" searchable="false" description="" title="" pof-attribute="id" type="xs:long" required="true" configuration="false" in="false" out="false" name="id" id="V1328357351482"><sup:value xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/></sup:variable><sup:variable visibleInUI="false" searchable="false" description="" title="" pof-attribute="status" type="xs:string" required="true" configuration="false" in="false" out="false" name="status" id="V1328357351483"><sup:value xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/></sup:variable><sup:variable visibleInUI="false" searchable="false" description="" title="" pof-attribute="update_time" type="xs:dateTime" required="true" configuration="false" in="false" out="false" name="update_time" id="V1328357351484"><sup:value xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/></sup:variable></sup:variables><sup:branch type="transactional" y-position="0" x-position="0" name="main-branch" id="B1328357340851"><sup:description xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/><sup:pools><sup:pool y-position="0" x-position="2" type="horizontal" name="POOL" id="PL1328357340856"><sup:description xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/><sup:swimlanes><sup:swimlane type="horizontal" color="RGB{50,50,50}" width="2000" height="600" y-position="0" x-position="34" name="SWIMLANE0" id="S1328357340864"><sup:description xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/><sup:endpoints><sup:endpoint typeName="Programmatic" type="3" y-position="50" x-position="70" name="Default startpoint" id="STRT1328357341851"><sup:value><![CDATA[<map>
+  <entry>
+    <string>pmSoap</string>
+    <string>1</string>
+  </entry>
+  <entry>
+    <string>pmRemoting</string>
+    <string>1</string>
+  </entry>
+  <entry>
+    <string>pmEjb</string>
+    <string>1</string>
+  </entry>
+  <entry>
+    <string>tmName</string>
+    <string>startpoint0</string>
+  </entry>
+  <entry>
+    <string>pmName</string>
+    <string>Default startpoint</string>
+  </entry>
+</map>]]></sup:value></sup:endpoint></sup:endpoints></sup:swimlane></sup:swimlanes></sup:pool></sup:pools></sup:branch></sup:process>

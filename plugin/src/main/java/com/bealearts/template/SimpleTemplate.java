@@ -19,6 +19,8 @@ package com.bealearts.template;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -52,7 +54,6 @@ public class SimpleTemplate
 		this.template = template;
 		
 		this.blockMap = new HashMap<String, BlockContent>();
-		this.content = null;
 		this.blockData = null;
 		
 		StringBuilder text = new StringBuilder();
@@ -88,10 +89,12 @@ public class SimpleTemplate
 	 */
 	public String toString()
 	{
-		if (this.blockData != null)
-			return this.renderBlock(this.blockData);
-		else
-			return "";
+		String result = "";
+		
+		result = this.renderBlock(this.blockData);
+		LOGGER.info(result);
+		
+		return result;
 	}
 	
 	
@@ -101,8 +104,6 @@ public class SimpleTemplate
 	File template;
 	
 	private static final Logger LOGGER = Logger.getLogger(SimpleTemplate.class.toString());
-	
-	private BlockContent content;
 	
 	private Map<String, BlockContent> blockMap;
 	
@@ -125,7 +126,7 @@ public class SimpleTemplate
 			if (matcher.group(1).equalsIgnoreCase("BEGIN"))
 			{	
 				if (currentBlock == null)
-					currentBlock = this.content = new BlockContent();
+					currentBlock = new BlockContent();
 				else
 					currentBlock = (BlockContent)currentBlock.addContentItem(new BlockContent());
 				
@@ -174,17 +175,27 @@ public class SimpleTemplate
 		
 		for (ITemplateContent contentItem:content.getContent())
 		{
+			
 			if (contentItem instanceof TextContent)
 				result.append( contentItem.render(block.getData()) );
 			else
 			{
+				String contentItemPath = ((BlockContent)contentItem).getBlockPath();
+				
 				for (Block subBlock:block.getSubBlocks())
-					result.append( this.renderBlock(subBlock) );
+				{
+					LOGGER.info(subBlock.getBlockPath());
+					LOGGER.info(contentItemPath);
+					
+					if (subBlock.getBlockPath().equals( contentItemPath ))
+						result.append( this.renderBlock(subBlock) );
+				}
 			}
 		}
 		
-		LOGGER.info(result.toString());
 		return result.toString();
 	}
+	
+
 	 
 }

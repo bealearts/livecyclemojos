@@ -59,7 +59,10 @@ public class Block
 		this.data = data;
 	}
 
-	
+
+	/**
+	 * Get the full path
+	 */
 	public String getBlockPath() 
 	{
 		if (this.parent == null)
