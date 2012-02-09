@@ -19,11 +19,16 @@ package com.bealearts.template;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.io.IOUtils;
 
 /**
  * A Simple plain text template processor
@@ -41,6 +46,16 @@ public class SimpleTemplate
 		this.loadTemplate(template);
 	}
 	
+
+	/**
+	 * Constructor
+	 * @throws IOException 
+	 */
+	public SimpleTemplate(InputStream template) throws IOException
+	{
+		this.loadTemplate(template);
+	}
+	
 	
 	/**
 	 * Load a template file
@@ -48,8 +63,6 @@ public class SimpleTemplate
 	 */
 	public void loadTemplate(File template) throws FileNotFoundException
 	{	
-		this.template = template;
-		
 		this.blockMap = new HashMap<String, BlockContent>();
 		this.blockData = null;
 		
@@ -70,6 +83,24 @@ public class SimpleTemplate
 	    
 	    this.parseTemplate(text.toString());
 	}
+	
+	
+	
+	/**
+	 * Load a template stream
+	 * @throws IOException 
+	 */
+	public void loadTemplate(InputStream template) throws IOException
+	{	
+		this.blockMap = new HashMap<String, BlockContent>();
+		this.blockData = null;
+		
+		StringWriter text = new StringWriter();
+		IOUtils.copy(template, text, "UTF-8");
+	    
+	    this.parseTemplate(text.toString());
+	}
+	
 	
 	
 	/**
@@ -106,8 +137,6 @@ public class SimpleTemplate
 	
 	
 	/* PRIVATE */
-	
-	File template;
 
 	
 	private Map<String, BlockContent> blockMap;

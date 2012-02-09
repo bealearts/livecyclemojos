@@ -26,6 +26,7 @@ import com.bealearts.livecycleplugin.utils.LCAUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Mojo to Generate the LiveCycle Archive app.info descriptor
@@ -75,7 +76,7 @@ public class AppInfoMojo extends AbstractMojo
 		} 
 		catch (IOException e) 
 		{
-			throw new MojoExecutionException("Error copy source files", e);
+			throw new MojoExecutionException("Error copying source files", e);
 		}
 		
 		
@@ -88,16 +89,16 @@ public class AppInfoMojo extends AbstractMojo
 		lcaDef.setMajorVersion("1");
 		lcaDef.setMinorVersion("0");
 		
-		File lcaTemplate = new File("app.info.template");
+		InputStream lcaTemplate = this.getClass().getClassLoader().getResourceAsStream("app.info.template");
 		
 		String content;
 		try 
 		{
 			content = lcaUtils.renderAppInfo( lcaTemplate, lcaDef);
 		} 
-		catch (FileNotFoundException e) 
+		catch (IOException e) 
 		{
-			throw new MojoExecutionException("Error loading template file: " + lcaTemplate.getAbsolutePath(), e);
+			throw new MojoExecutionException("Error loading template", e);
 		}
 		
 		try 
@@ -113,12 +114,5 @@ public class AppInfoMojo extends AbstractMojo
 	
 	
 	/* PRIVATE */
-	
-	private File getResource(String path)
-	{
-		String absolutePath = this.getClass().getClassLoader().getResource(path).toString();
-		absolutePath = absolutePath.replaceFirst("file:", "");
-		
-		return new File(absolutePath);
-	}
+
 }

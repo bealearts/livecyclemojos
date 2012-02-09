@@ -21,6 +21,7 @@ import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
@@ -101,37 +102,21 @@ public class LCAUtils
 	{
 		SimpleTemplate template = new SimpleTemplate(templateFile);
 		
-		// Global variables
-		Map<String, Object> globals = new HashMap<String, Object>();
-		globals.put("MAJORVERSION", lcaDefinition.getMajorVersion());
-		globals.put("MINORVERSION", lcaDefinition.getMinorVersion());
-		globals.put("TIMESTAMP", this.timestamp("yyyy-MM-dd'T'HH:mm:ss.SSS"));
-		template.setGlobalVariables(globals);
-		
-		Block main = new Block("main", lcaDefinition);
-		
-		for (AppInfo app:lcaDefinition.getApplications())
-		{
-			Block appInfo = new Block("appinfo", app);
-			
-			for (LCAObject obj:app.getLcaObjects())
-			{
-				Block topLevelObject = new Block("toplevelobject", obj);
-				
-				for (LCAObject objSecond:obj.getLcaObjects())
-					topLevelObject.addSubBlock( new Block("secondaryobject", objSecond) );
-				
-				// TODO: References
-				
-				appInfo.addSubBlock(topLevelObject);
-			}
-			
-			main.addSubBlock(appInfo);
-		}
-
-		template.setMainBlock(main);
-		return template.toString().trim();
+		return this.processTemplate(template, lcaDefinition);
 	}
+	
+	/**
+	 * Render the app.info file content from a template
+	 * @throws IOException 
+	 */
+	public String renderAppInfo(InputStream templateStream, LCADefinition lcaDefinition) throws IOException
+	{
+		SimpleTemplate template = new SimpleTemplate(templateStream);
+		
+		return this.processTemplate(template, lcaDefinition);
+	}
+	
+	
 	
 	
 	/**
@@ -179,6 +164,7 @@ public class LCAUtils
 	    }
 	};
 	
+	
 	/** 
 	 * This filter only returns top level object files
 	 */
@@ -190,4 +176,41 @@ public class LCAUtils
 	    }
 	};
 	
+	
+	/**
+	 * Process the template
+	 */
+	private String processTemplate(SimpleTemplate template, LCADefinition lcaDefinition)
+	{
+		// Global variables
+		Map<String, Object> globals = new HashMap<String, Object>();
+		globals.put("MAJORVERSION", lcaDefinition.getMajorVersion());
+		globals.put("MINORVERSION", lcaDefinition.getMinorVersion());
+		globals.put("TIMESTAMP", this.timestamp("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+		template.setGlobalVariables(globals);
+		
+		Block main = new Block("main", lcaDefinition);
+		
+		for (AppInfo app:lcaDefinition.getApplications())
+		{
+			Block appInfo = new Block("appinfo", app);
+			
+			for (LCAObject obj:app.getLcaObjects())
+			{
+				Block topLevelObject = new Block("toplevelobject", obj);
+				
+				for (LCAObject objSecond:obj.getLcaObjects())
+					topLevelObject.addSubBlock( new Block("secondaryobject", objSecond) );
+				
+				// TODO: References
+				
+				appInfo.addSubBlock(topLevelObject);
+			}
+			
+			main.addSubBlock(appInfo);
+		}
+
+		template.setMainBlock(main);
+		return template.toString().trim();
+	}
 }
