@@ -19,12 +19,9 @@ package com.bealearts.template;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -100,8 +97,8 @@ public class SimpleTemplate
 	{
 		String result = "";
 		
-		result = this.renderBlock(this.blockData);
-		LOGGER.info(result);
+		if (this.blockData != null)
+			result = this.renderBlock(this.blockData);
 		
 		return result;
 	}
@@ -111,8 +108,7 @@ public class SimpleTemplate
 	/* PRIVATE */
 	
 	File template;
-	
-	private static final Logger LOGGER = Logger.getLogger(SimpleTemplate.class.toString());
+
 	
 	private Map<String, BlockContent> blockMap;
 	

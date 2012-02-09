@@ -73,7 +73,7 @@ public class TextContent implements ITemplateContent
 			{
 				renderedContent = renderedContent.replaceFirst("\\{"+match+"\\}", this.escape(vars.get(match).toString()));
 			}
-			else if (globalVariables.containsKey(match))
+			else if (globalVariables != null && globalVariables.containsKey(match))
 			{
 				renderedContent = renderedContent.replaceFirst("\\{"+match+"\\}", this.escape(globalVariables.get(match).toString()));
 			}

@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -53,14 +54,14 @@ public class SimpleTemplateTest
 	@Test
 	public void testLoadTemplate() throws FileNotFoundException 
 	{
-		SimpleTemplate template = new SimpleTemplate(this.getResource("app.info.jtpl"));
+		SimpleTemplate template = new SimpleTemplate(this.getResource("app.info.template"));
 	}
 	
 	
 	@Test
 	public void testToString() throws Exception
 	{
-		SimpleTemplate template = new SimpleTemplate(this.getResource("app.info.jtpl"));
+		SimpleTemplate template = new SimpleTemplate(this.getResource("app.info.template"));
 		
 		String content = template.toString();
 		
@@ -72,7 +73,7 @@ public class SimpleTemplateTest
 		template.setMainBlock(main);
 		
 		content = template.toString();
-		assertThat(content, equalTo(""));
+		assertThat(content, not(equalTo("")));
 	}
 	
 	
