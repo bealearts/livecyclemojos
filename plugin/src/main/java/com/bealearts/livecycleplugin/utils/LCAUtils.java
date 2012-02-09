@@ -25,6 +25,8 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.bealearts.livecycleplugin.lca.AppInfo;
 import com.bealearts.livecycleplugin.lca.LCADefinition;
@@ -102,9 +104,11 @@ public class LCAUtils
 		SimpleTemplate template = new SimpleTemplate(templateFile);
 		
 		// Global variables
-		//template.assign("MAJORVERSION", lcaDefinition.getMajorVersion());
-		//template.assign("MINORVERSION", lcaDefinition.getMinorVersion());
-		//template.assign("TIMESTAMP", this.timestamp("yyyy-MM-dd'T'HH:mm:ss.SSSZ"));
+		Map<String, Object> globals = new HashMap<String, Object>();
+		globals.put("MAJORVERSION", lcaDefinition.getMajorVersion());
+		globals.put("MINORVERSION", lcaDefinition.getMinorVersion());
+		globals.put("TIMESTAMP", this.timestamp("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+		template.setGlobalVariables(globals);
 		
 		Block main = new Block("main", lcaDefinition);
 		
@@ -128,7 +132,7 @@ public class LCAUtils
 		}
 
 		template.setMainBlock(main);
-		return template.toString();
+		return template.toString().trim();
 	}
 	
 	

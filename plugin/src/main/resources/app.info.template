@@ -15,7 +15,6 @@
  * limitations under the License.
  */
  -->
-
 <!-- BEGIN: main -->
 <lca_info xmlns="http://adobe.com/idp/applicationmanager/appinfo">
 	
@@ -27,7 +26,7 @@
 		<implementation-version xmlns="">9.0</implementation-version>
 		<major-version xmlns="">{MAJORVERSION}</major-version>
 		<minor-version xmlns="">{MINORVERSION}</minor-version>
-		<createdDate xmlns="">{TIMESTAMP}</createdDate>
+		<createdDate xmlns="">{TIMESTAMP}Z</createdDate>
 		<description xmlns=""/>
 		
 		<!-- BEGIN: toplevelobject -->
@@ -65,8 +64,8 @@
     </application-info>
     <!-- END: appinfo -->
     
-	<type xmlns="">Multiple</type>
-	<createdDate xmlns="">{TIMESTAMP}</createdDate>
+	<type xmlns="">Simple</type>
+	<createdDate xmlns="">{TIMESTAMP}Z</createdDate>
 	<description xmlns="">{DESCRIPTION}</description>
 	<createdBy xmlns="">{CREATEDBY}</createdBy>
 </lca_info>

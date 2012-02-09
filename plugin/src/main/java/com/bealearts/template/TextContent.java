@@ -57,9 +57,9 @@ public class TextContent implements ITemplateContent
 	/**
 	 * Render text content
 	 */
-	public String render(Object data)
+	public String render(Object blockData, Map<String, Object> globalVariables)
 	{
-		Map<String, Object> vars = this.getBeanProperties(data);
+		Map<String, Object> vars = this.getBeanProperties(blockData);
 		String renderedContent = this.content;
 		
 		Pattern pattern = Pattern.compile("\\{([\\w\\.]+)\\}");
@@ -72,6 +72,10 @@ public class TextContent implements ITemplateContent
 			if ( vars.containsKey(match) )
 			{
 				renderedContent = renderedContent.replaceFirst("\\{"+match+"\\}", this.escape(vars.get(match).toString()));
+			}
+			else if (globalVariables.containsKey(match))
+			{
+				renderedContent = renderedContent.replaceFirst("\\{"+match+"\\}", this.escape(globalVariables.get(match).toString()));
 			}
 		}
 		

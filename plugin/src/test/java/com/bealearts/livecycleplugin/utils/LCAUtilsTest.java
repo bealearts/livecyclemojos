@@ -129,7 +129,7 @@ public class LCAUtilsTest
 		lcaDef.getApplications().add(app2);
 		
 		
-		String output = lcaUtils.renderAppInfo(this.getResource("app.info.jtpl"), lcaDef);
+		String output = lcaUtils.renderAppInfo(this.getResource("app.info.template"), lcaDef);
 
 		NamespaceContext usingNamespaces = new SimpleNamespaceContext()
 			.withBinding("lca", "http://adobe.com/idp/applicationmanager/appinfo");
@@ -143,13 +143,11 @@ public class LCAUtilsTest
 		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[1]/top-level-object[1]/name", usingNamespaces, equalTo("Test Process 1")));
 		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[1]/top-level-object[1]/type", usingNamespaces, equalTo("process")));
 		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[1]/top-level-object[1]/revision", usingNamespaces, equalTo("1.2")));
-		//assertThat(the(output), hasXPath("count(/lca:lca_info/lca:application-info[1]/top-level-object[1]/secondary-object)", equalTo("1)")));
 		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[1]/top-level-object[1]/secondary-object[1]/name", usingNamespaces, equalTo("Test Process 1.process_dependency")));
 		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[1]/top-level-object[1]/secondary-object[1]/type", usingNamespaces, equalTo("process_dependency")));
 		
 		
 		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[2]/name", usingNamespaces, equalTo("App2")));
-		//assertThat(the(output), hasXPath("count(/lca:lca_info/lca:application-info[2]/top-level-object[1]/secondary-object)", equalTo("1)")));
 	}
 	
 	
@@ -164,9 +162,9 @@ public class LCAUtilsTest
 		LCADefinition lcaDef = lcaUtils.parseSourceFiles(sourcePath);
 		lcaDef.setCreatedBy("Jimmy McTest");
 		lcaDef.setDescription("A Test Archive");
-		lcaDef.setMajorVersion("4");
-		lcaDef.setMinorVersion("2");
-		String content = lcaUtils.renderAppInfo(this.getResource("app.info.jtpl"), lcaDef);
+		lcaDef.setMajorVersion("1");
+		lcaDef.setMinorVersion("0");
+		String content = lcaUtils.renderAppInfo(this.getResource("app.info.template"), lcaDef);
 		
 		lcaUtils.writeAppInfo(sourcePath, content);
 		

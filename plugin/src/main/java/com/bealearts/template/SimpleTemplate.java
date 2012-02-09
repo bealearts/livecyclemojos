@@ -85,6 +85,15 @@ public class SimpleTemplate
 	
 	
 	/**
+	 * Set global vars available to all blocks
+	 */
+	public void setGlobalVariables(Map<String,Object> globals)
+	{
+		this.globalVariables = globals;
+	}
+	
+	
+	/**
 	 * Render the template
 	 */
 	public String toString()
@@ -108,6 +117,8 @@ public class SimpleTemplate
 	private Map<String, BlockContent> blockMap;
 	
 	private Block blockData;
+	
+	private Map<String, Object> globalVariables;
 	
 	
 	/**
@@ -177,16 +188,13 @@ public class SimpleTemplate
 		{
 			
 			if (contentItem instanceof TextContent)
-				result.append( contentItem.render(block.getData()) );
+				result.append( ((TextContent)contentItem).render(block.getData(), this.globalVariables) );
 			else
 			{
 				String contentItemPath = ((BlockContent)contentItem).getBlockPath();
 				
 				for (Block subBlock:block.getSubBlocks())
 				{
-					LOGGER.info(subBlock.getBlockPath());
-					LOGGER.info(contentItemPath);
-					
 					if (subBlock.getBlockPath().equals( contentItemPath ))
 						result.append( this.renderBlock(subBlock) );
 				}

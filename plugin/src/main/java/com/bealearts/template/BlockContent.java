@@ -52,14 +52,6 @@ public class BlockContent implements ITemplateContent
 	}
 	
 	
-	/**
-	 * Render content
-	 */
-	public String render(Object data)
-	{
-		return "";
-	}
-	
 	
 	/**
 	 * Get the full path

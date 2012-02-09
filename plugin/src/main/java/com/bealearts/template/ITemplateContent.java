@@ -21,6 +21,4 @@ public interface ITemplateContent
 	public BlockContent getParent();
 
 	public void setParent(BlockContent parent);
-	
-	public String render(Object data);
 }
