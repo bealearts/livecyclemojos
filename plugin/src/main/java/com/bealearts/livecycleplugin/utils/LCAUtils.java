@@ -34,8 +34,6 @@ import com.bealearts.livecycleplugin.lca.LCAObject;
 import com.bealearts.template.Block;
 import com.bealearts.template.SimpleTemplate;
 
-import net.sf.jtpl.Template;
-
 /**
  * LiveCycle Archive Utilities
  */

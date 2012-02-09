@@ -8,6 +8,7 @@
 				<phases>
 					<process-resources>org.apache.maven.plugins:maven-resources-plugin:resources</process-resources>
 					<process-sources>com.bealearts:livecyclemojos-maven-plugin:app-info</process-sources>
+					<compile>com.bealearts:livecyclemojos-maven-plugin:archive</compile>
 				</phases>
 			</configuration>
 		</component>

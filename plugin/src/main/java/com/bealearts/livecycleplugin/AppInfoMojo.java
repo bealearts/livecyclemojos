@@ -16,6 +16,7 @@
 
 package com.bealearts.livecycleplugin;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 
@@ -34,47 +35,54 @@ import java.io.IOException;
  */
 public class AppInfoMojo extends AbstractMojo
 {
+		
 	/**
-	 * Location for the app.info file.
+	 * Location of the build directory
 	 * 
 	 * @parameter expression="${project.build.directory}"
 	 * @required
 	 */
-	private File outputDirectory;
-	
-	
+	private File buildDirectory;
+
 	
 	/**
-	 * Location of the LiveCycle source code
+	 * Location of the source directory
 	 * 
 	 * @parameter expression="${project.build.sourceDirectory}"
 	 * @required
 	 */
-	private File sourceDirectory;
+	private File sourceDirectory;	
 	
-	
-	/**
-	* The Zip archiver.
-	* @component role="org.codehaus.plexus.archiver.Archiver" roleHint="zip"
-	*/
-	//private ZipArchiver zipArchiver;
-
 	
 	/**
 	 * Execute the Mojo
 	 */
 	public void execute() throws MojoExecutionException
 	{
-		if ( !this.outputDirectory.exists() )
+		if ( !this.buildDirectory.exists() )
 		{
-			if ( !this.outputDirectory.mkdirs() )
-				throw new MojoExecutionException("Error creating output directory: " + this.outputDirectory.getAbsolutePath());
+			if ( !this.buildDirectory.mkdirs() )
+				throw new MojoExecutionException("Error creating output directory: " + this.buildDirectory.getAbsolutePath());
 		}
 
 		
+		File classesFolder = new File(this.buildDirectory, "classes");
+		
+		
+		try 
+		{
+			FileUtils.copyDirectory(this.sourceDirectory, classesFolder);
+		} 
+		catch (IOException e) 
+		{
+			throw new MojoExecutionException("Error copy source files", e);
+		}
+		
+		
+		
 		LCAUtils lcaUtils = new LCAUtils();
 		
-		LCADefinition lcaDef = lcaUtils.parseSourceFiles(this.sourceDirectory);
+		LCADefinition lcaDef = lcaUtils.parseSourceFiles(classesFolder);
 		lcaDef.setCreatedBy("Jimmy McTest");
 		lcaDef.setDescription("A Test Archive");
 		lcaDef.setMajorVersion("1");
@@ -89,16 +97,16 @@ public class AppInfoMojo extends AbstractMojo
 		} 
 		catch (FileNotFoundException e) 
 		{
-			throw new MojoExecutionException("Error loading template file: " + lcaTemplate.getAbsolutePath());
+			throw new MojoExecutionException("Error loading template file: " + lcaTemplate.getAbsolutePath(), e);
 		}
 		
 		try 
 		{
-			lcaUtils.writeAppInfo(this.outputDirectory, content);
+			lcaUtils.writeAppInfo(classesFolder, content);
 		} 
 		catch (IOException e) 
 		{
-			throw new MojoExecutionException("Error writing app.info file to: " + this.outputDirectory.getAbsolutePath());
+			throw new MojoExecutionException("Error writing app.info file to: " + classesFolder.getAbsolutePath(), e);
 		}
 	}
 	
