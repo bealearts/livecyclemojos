@@ -19,8 +19,11 @@ package com.bealearts.livecycleplugin;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 
+import com.bealearts.livecycleplugin.lca.LCADefinition;
+import com.bealearts.livecycleplugin.utils.LCAUtils;
+
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
@@ -38,10 +41,27 @@ public class AppInfoMojo extends AbstractMojo
 	 * @required
 	 */
 	private File outputDirectory;
+	
+	
+	
+	/**
+	 * Location of the LiveCycle source code
+	 * 
+	 * @parameter expression="${project.build.sourceDirectory}"
+	 * @required
+	 */
+	private File sourceDirectory;
+	
+	
+	/**
+	* The Zip archiver.
+	* @component role="org.codehaus.plexus.archiver.Archiver" roleHint="zip"
+	*/
+	//private ZipArchiver zipArchiver;
 
 	
 	/**
-	 * Execute the mojo
+	 * Execute the Mojo
 	 */
 	public void execute() throws MojoExecutionException
 	{
@@ -51,23 +71,46 @@ public class AppInfoMojo extends AbstractMojo
 				throw new MojoExecutionException("Error creating output directory: " + this.outputDirectory.getAbsolutePath());
 		}
 
-		File touch = new File(this.outputDirectory, "touch.txt");
-
-		FileWriter w = null;
-		try {
-			w = new FileWriter(touch);
-
-			w.write("touch.txt");
-		} catch (IOException e) {
-			throw new MojoExecutionException("Error creating file " + touch, e);
-		} finally {
-			if (w != null) {
-				try {
-					w.close();
-				} catch (IOException e) {
-					// ignore
-				}
-			}
+		
+		LCAUtils lcaUtils = new LCAUtils();
+		
+		LCADefinition lcaDef = lcaUtils.parseSourceFiles(this.sourceDirectory);
+		lcaDef.setCreatedBy("Jimmy McTest");
+		lcaDef.setDescription("A Test Archive");
+		lcaDef.setMajorVersion("1");
+		lcaDef.setMinorVersion("0");
+		
+		File lcaTemplate = new File("app.info.template");
+		
+		String content;
+		try 
+		{
+			content = lcaUtils.renderAppInfo( lcaTemplate, lcaDef);
+		} 
+		catch (FileNotFoundException e) 
+		{
+			throw new MojoExecutionException("Error loading template file: " + lcaTemplate.getAbsolutePath());
 		}
+		
+		try 
+		{
+			lcaUtils.writeAppInfo(this.outputDirectory, content);
+		} 
+		catch (IOException e) 
+		{
+			throw new MojoExecutionException("Error writing app.info file to: " + this.outputDirectory.getAbsolutePath());
+		}
+	}
+	
+	
+	
+	/* PRIVATE */
+	
+	private File getResource(String path)
+	{
+		String absolutePath = this.getClass().getClassLoader().getResource(path).toString();
+		absolutePath = absolutePath.replaceFirst("file:", "");
+		
+		return new File(absolutePath);
 	}
 }
