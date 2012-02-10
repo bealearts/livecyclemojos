@@ -16,18 +16,21 @@
 
 package com.bealearts.livecycleplugin;
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 
 import java.io.File;
 
+import org.apache.maven.project.MavenProject;
+
 
 /**
  * Mojo to Generate the LiveCycle Archive file
  * 
  * @goal archive
- * @phase compile
+ * @phase package
  */
 public class ArchiveMojo extends AbstractMojo
 {
@@ -53,10 +56,19 @@ public class ArchiveMojo extends AbstractMojo
 	
 	
 	/**
-	* The Zip archiver.
+	* The Zip archiver
+	* 
 	* @component role="org.codehaus.plexus.archiver.Archiver" roleHint="zip"
 	*/
 	private ZipArchiver zipArchiver;
+	
+
+	/**
+	 * The using maven Project
+	 * 
+	 *  @parameter default-value="${project}" 
+	 */
+	private MavenProject project;
 
 	
 	/**
@@ -64,18 +76,24 @@ public class ArchiveMojo extends AbstractMojo
 	 */
 	public void execute() throws MojoExecutionException
 	{
+		File archive = new File(this.buildDirectory, this.finalName + ".lca");
+		
 		try
 		{
 			String[] excludes = {"**/*.application"};
 			
 			this.zipArchiver.addDirectory(new File(this.buildDirectory, "classes"), null, excludes);
-			this.zipArchiver.setDestFile(new File(this.buildDirectory, this.finalName + ".lca"));
+			this.zipArchiver.setDestFile(archive);
 			this.zipArchiver.createArchive();
 		}
 		catch (Exception e)
 		{
 			throw new MojoExecutionException("Error creating archive", e);
 		}
+		
+		
+		Artifact artifact = this.project.getArtifact();
+		artifact.setFile(archive);
 	}
 	
 	

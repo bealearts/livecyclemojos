@@ -8,7 +8,9 @@
 				<phases>
 					<process-resources>org.apache.maven.plugins:maven-resources-plugin:resources</process-resources>
 					<process-sources>com.bealearts:livecyclemojos-maven-plugin:app-info</process-sources>
-					<compile>com.bealearts:livecyclemojos-maven-plugin:archive</compile>
+					<package>com.bealearts:livecyclemojos-maven-plugin:archive</package>
+					<install>org.apache.maven.plugins:maven-install-plugin:install</install>
+					<deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>	
 				</phases>
 			</configuration>
 		</component>
