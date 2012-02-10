@@ -40,20 +40,6 @@ public class LCADefinition
 		this.description = description;
 	}
 	
-	public String getMajorVersion() {
-		return majorVersion;
-	}
-	public void setMajorVersion(String majorVersion) {
-		this.majorVersion = majorVersion;
-	}
-	
-	public String getMinorVersion() {
-		return minorVersion;
-	}
-	public void setMinorVersion(String minorVersion) {
-		this.minorVersion = minorVersion;
-	}
-	
 	public List<AppInfo> getApplications() {
 		return applications;
 	}
@@ -77,8 +63,6 @@ public class LCADefinition
 
 	private String createdBy;
 	private String description;
-	private String majorVersion;
-	private String minorVersion;
 	
 	private List<AppInfo> applications = new ArrayList<AppInfo>();
 

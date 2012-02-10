@@ -44,10 +44,38 @@ public class AppInfo
 	}
 
 	
+	public String getRevision() {
+		return revision;
+	}
+
+	public void setRevision(String revision) {
+		this.revision = revision;
+	}	
+	
+	
+	/**
+	 * Major version from revision
+	 */
+	public String getMajorVersion()
+	{
+		return this.revision.substring( 0, this.revision.indexOf('.') );
+	}
+	
+	
+	/**
+	 * Minor version from revision
+	 */
+	public String getMinorVersion()
+	{
+		return this.revision.substring( this.revision.indexOf('.')+1 );
+	}
+	
 	
 	/* PRIVATE */
 
+
 	private String name;
 	private List<LCAObject> lcaObjects = new ArrayList<LCAObject>();
+	private String revision;
 
 }

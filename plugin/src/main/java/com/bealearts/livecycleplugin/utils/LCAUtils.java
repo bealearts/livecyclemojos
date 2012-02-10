@@ -53,21 +53,23 @@ public class LCAUtils
 		File[] applicationDirs = sourcePath.listFiles(this.dirFilter);
 		for (File applicationDir:applicationDirs)
 		{
-			AppInfo appInfo = new AppInfo();
-			appInfo.setName(applicationDir.getName());
+			String appName = applicationDir.getName();
 			
 			File[] revisionDirs = applicationDir.listFiles(this.dirFilter);
 			for (File revisionDir:revisionDirs)
 			{
-				String revision = revisionDir.getName();
+				AppInfo appInfo = new AppInfo();
+				appInfo.setName(appName);
+				appInfo.setRevision(revisionDir.getName());
+				
 				
 				// Top level objects
 				File[] objectFiles = revisionDir.listFiles(this.topLevelObjectFilter);
 				for (File objectFile:objectFiles)
 				{
 					LCAObject obj = new LCAObject();
+					obj.setRevision( appInfo.getRevision() );
 					obj.setName(objectFile.getName());
-					obj.setRevision(revision);
 					obj.setType(objectFile.getName().substring(objectFile.getName().lastIndexOf('.')+1));
 					
 					// Secondary level objects
@@ -84,9 +86,8 @@ public class LCAUtils
 					appInfo.getLcaObjects().add(obj);
 				}
 				
+				lcaDefinition.getApplications().add(appInfo);
 			}
-			
-			lcaDefinition.getApplications().add(appInfo);
 		}
 		
 		return lcaDefinition;
@@ -184,8 +185,6 @@ public class LCAUtils
 	{
 		// Global variables
 		Map<String, Object> globals = new HashMap<String, Object>();
-		globals.put("MAJORVERSION", lcaDefinition.getMajorVersion());
-		globals.put("MINORVERSION", lcaDefinition.getMinorVersion());
 		globals.put("TIMESTAMP", this.timestamp("yyyy-MM-dd'T'HH:mm:ss.SSS"));
 		template.setGlobalVariables(globals);
 		

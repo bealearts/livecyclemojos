@@ -103,8 +103,6 @@ public class AppInfoMojo extends AbstractMojo
 		LCADefinition lcaDef = lcaUtils.parseSourceFiles(classesFolder);
 		lcaDef.setCreatedBy(this.createdBy);
 		lcaDef.setDescription(this.description);
-		lcaDef.setMajorVersion("1");
-		lcaDef.setMinorVersion("0");
 		
 		InputStream lcaTemplate = this.getClass().getClassLoader().getResourceAsStream("app.info.template");
 		
