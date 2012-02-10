@@ -24,7 +24,6 @@ import com.bealearts.livecycleplugin.lca.LCADefinition;
 import com.bealearts.livecycleplugin.utils.LCAUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -52,7 +51,25 @@ public class AppInfoMojo extends AbstractMojo
 	 * @parameter expression="${project.build.sourceDirectory}"
 	 * @required
 	 */
-	private File sourceDirectory;	
+	private File sourceDirectory;
+	
+	
+	/**
+	 * Author of the archive
+	 * 
+	 * @parameter default-value="LiveCycleMojos"
+	 */
+	private String createdBy;
+	
+	
+	/**
+	 * Description of the archive
+	 * 
+	 * @parameter default-value="LiveCycleMojos created Archive"
+	 */
+	private String description;
+	
+	
 	
 	
 	/**
@@ -84,8 +101,8 @@ public class AppInfoMojo extends AbstractMojo
 		LCAUtils lcaUtils = new LCAUtils();
 		
 		LCADefinition lcaDef = lcaUtils.parseSourceFiles(classesFolder);
-		lcaDef.setCreatedBy("Jimmy McTest");
-		lcaDef.setDescription("A Test Archive");
+		lcaDef.setCreatedBy(this.createdBy);
+		lcaDef.setDescription(this.description);
 		lcaDef.setMajorVersion("1");
 		lcaDef.setMinorVersion("0");
 		

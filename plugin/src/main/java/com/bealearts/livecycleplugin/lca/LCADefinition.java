@@ -61,6 +61,17 @@ public class LCADefinition
 		this.applications = applications;
 	}
 	
+	/**
+	 * Return the type of the archive
+	 */
+	public String getType()
+	{
+		if (this.applications.size() > 1)
+			return "Multipule";
+		else
+			return "Simple";
+	}
+	
 	/* PRIVATE */
 
 

@@ -64,7 +64,7 @@
     </application-info>
     <!-- END: appinfo -->
     
-	<type xmlns="">Simple</type>
+	<type xmlns="">{TYPE}</type>
 	<createdDate xmlns="">{TIMESTAMP}Z</createdDate>
 	<description xmlns="">{DESCRIPTION}</description>
 	<createdBy xmlns="">{CREATEDBY}</createdBy>
