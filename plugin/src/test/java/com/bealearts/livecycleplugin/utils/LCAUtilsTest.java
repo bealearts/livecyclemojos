@@ -99,11 +99,10 @@ public class LCAUtilsTest
 		LCADefinition lcaDef = new LCADefinition();
 		lcaDef.setCreatedBy("Jimmy McTest");
 		lcaDef.setDescription("A Test Archive");
-		lcaDef.setMajorVersion("4");
-		lcaDef.setMinorVersion("2");
 		
 		AppInfo app1 = new AppInfo();
 			app1.setName("App1");
+			app1.setRevision("1.2");
 				LCAObject obj1 = new LCAObject();
 				obj1.setName("Test Process 1");
 				obj1.setType("process");
@@ -117,6 +116,7 @@ public class LCAUtilsTest
 		
 		AppInfo app2 = new AppInfo();
 			app2.setName("App2");
+			app2.setRevision("1.2");
 				LCAObject obj2 = new LCAObject();
 				obj2.setName("Test Process 2");
 				obj2.setType("process");
@@ -162,8 +162,6 @@ public class LCAUtilsTest
 		LCADefinition lcaDef = lcaUtils.parseSourceFiles(sourcePath);
 		lcaDef.setCreatedBy("Jimmy McTest");
 		lcaDef.setDescription("A Test Archive");
-		lcaDef.setMajorVersion("1");
-		lcaDef.setMinorVersion("0");
 		String content = lcaUtils.renderAppInfo(this.getResource("app.info.template"), lcaDef);
 		
 		lcaUtils.writeAppInfo(sourcePath, content);
