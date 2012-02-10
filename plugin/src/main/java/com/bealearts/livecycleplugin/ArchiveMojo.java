@@ -66,7 +66,9 @@ public class ArchiveMojo extends AbstractMojo
 	{
 		try
 		{
-			this.zipArchiver.addDirectory(new File(this.buildDirectory, "classes"));
+			String[] excludes = {"**/*.application"};
+			
+			this.zipArchiver.addDirectory(new File(this.buildDirectory, "classes"), null, excludes);
 			this.zipArchiver.setDestFile(new File(this.buildDirectory, this.finalName + ".lca"));
 			this.zipArchiver.createArchive();
 		}
