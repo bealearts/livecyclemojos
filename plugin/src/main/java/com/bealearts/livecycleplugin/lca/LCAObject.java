@@ -60,10 +60,21 @@ public class LCAObject
 	}	
 	
 	
+	public List<Reference> getReferences() {
+		return references;
+	}
+
+	public void setReferences(List<Reference> references) {
+		this.references = references;
+	}	
+	
+	
 	/* PRIVATE */
+
 
 	private String name;
 	private String type;
 	private String revision;
 	private List<LCAObject> lcaObjects = new ArrayList<LCAObject>();
+	private List<Reference> references = new ArrayList<Reference>();
 }

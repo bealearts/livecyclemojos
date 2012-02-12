@@ -49,10 +49,10 @@
 			<!-- BEGIN: reference -->
 			<reference>
 				<far-reference>
-					<application-name>UserManagement</application-name>
-					<application-major-version>6</application-major-version>
-					<application-minor-version>0</application-minor-version>
-					<name>_GetIDforGroup.process</name>
+					<application-name>{APPLICATIONNAME}</application-name>
+					<application-major-version>{APPLICATIONMAJORVERSION}</application-major-version>
+					<application-minor-version>{APPLICATIONMINORVERSION}</application-minor-version>
+					<name>{OBJECTNAME}</name>
 				</far-reference>
 			</reference>
 			<!-- END: reference -->

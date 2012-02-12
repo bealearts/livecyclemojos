@@ -54,7 +54,7 @@ public class AppInfo
 	
 	
 	/**
-	 * Major version from revision
+	 * Major version from version
 	 */
 	public String getMajorVersion()
 	{
@@ -63,7 +63,7 @@ public class AppInfo
 	
 	
 	/**
-	 * Minor version from revision
+	 * Minor version from version
 	 */
 	public String getMinorVersion()
 	{

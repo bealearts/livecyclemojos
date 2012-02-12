@@ -38,6 +38,7 @@ import static org.xmlmatchers.transform.XmlConverters.the;
 import com.bealearts.livecycleplugin.lca.AppInfo;
 import com.bealearts.livecycleplugin.lca.LCADefinition;
 import com.bealearts.livecycleplugin.lca.LCAObject;
+import com.bealearts.livecycleplugin.lca.Reference;
 
 /**
  * Tests for LCAUtils
@@ -70,7 +71,7 @@ public class LCAUtilsTest
 	
 	
 	@Test
-	public void testParseSourceFiles() throws IOException
+	public void testParseSourceFiles() throws Exception
 	{
 		File sourcePath = new File(this.getResource(""), "TestSourcePath");
 		
@@ -84,6 +85,7 @@ public class LCAUtilsTest
 		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(0).getRevision(), equalTo("1.0"));
 		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(0).getType(), equalTo("process"));
 		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(0).getLcaObjects().size(), equalTo(1));
+		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(0).getReferences().size(), equalTo(1));
 		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(1).getLcaObjects().size(), equalTo(1));
 		
 		assertThat(lcaDef.getApplications().get(1).getName(), equalTo("App2"));
@@ -125,6 +127,11 @@ public class LCAUtilsTest
 					objSecond2.setName("Test Process 2.process_dependency");
 					objSecond2.setType("process_dependency");
 				obj2.getLcaObjects().add(objSecond2);
+					Reference ref = new Reference();
+					ref.setApplicationName("App1");
+					ref.setApplicationVersion("1.2");
+					ref.setObjectName("Test Process 1.process");
+				obj2.getReferences().add(ref);
 			app2.getLcaObjects().add(obj2);	
 		lcaDef.getApplications().add(app2);
 		
@@ -148,12 +155,13 @@ public class LCAUtilsTest
 		
 		
 		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[2]/name", usingNamespaces, equalTo("App2")));
+		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[2]/top-level-object[1]/reference[1]/far-reference[1]/application-name", usingNamespaces, equalTo("App1")));
 	}
 	
 	
 	
 	@Test
-	public void testWriteAppInfo() throws IOException
+	public void testWriteAppInfo() throws Exception
 	{
 		File sourcePath = new File(this.getResource(""), "TestSourcePath");
 		

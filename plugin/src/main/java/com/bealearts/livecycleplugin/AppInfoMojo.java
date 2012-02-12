@@ -100,7 +100,15 @@ public class AppInfoMojo extends AbstractMojo
 		
 		LCAUtils lcaUtils = new LCAUtils();
 		
-		LCADefinition lcaDef = lcaUtils.parseSourceFiles(classesFolder);
+		LCADefinition lcaDef;
+		try 
+		{
+			lcaDef = lcaUtils.parseSourceFiles(classesFolder);
+		} 
+		catch (Exception e) 
+		{
+			throw new MojoExecutionException("Error parsing source files", e);
+		}
 		lcaDef.setCreatedBy(this.createdBy);
 		lcaDef.setDescription(this.description);
 		

@@ -27,11 +27,27 @@ import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import com.bealearts.livecycleplugin.lca.AppInfo;
 import com.bealearts.livecycleplugin.lca.LCADefinition;
 import com.bealearts.livecycleplugin.lca.LCAObject;
+import com.bealearts.livecycleplugin.lca.Reference;
 import com.bealearts.template.Block;
 import com.bealearts.template.SimpleTemplate;
 
@@ -45,8 +61,9 @@ public class LCAUtils
 	
 	/**
 	 * Parse the LiveCycle source files to generate an LCADefinition
+	 * @throws Exception 
 	 */
-	public LCADefinition parseSourceFiles(File sourcePath)
+	public LCADefinition parseSourceFiles(File sourcePath) throws Exception
 	{
 		LCADefinition lcaDefinition = new LCADefinition();
 		
@@ -79,6 +96,8 @@ public class LCAUtils
 						LCAObject secObj = new LCAObject();
 						secObj.setName(secondaryObjectFile.getName());
 						secObj.setType(secondaryObjectFile.getName().substring(secondaryObjectFile.getName().lastIndexOf('.')+1));
+						
+						this.processReferences(obj, secondaryObjectFile);
 						
 						obj.getLcaObjects().add(secObj);
 					}
@@ -201,7 +220,8 @@ public class LCAUtils
 				for (LCAObject objSecond:obj.getLcaObjects())
 					topLevelObject.addSubBlock( new Block("secondaryobject", objSecond) );
 				
-				// TODO: References
+				for (Reference reference:obj.getReferences())
+					topLevelObject.addSubBlock( new Block("reference", reference) );
 				
 				appInfo.addSubBlock(topLevelObject);
 			}
@@ -212,4 +232,53 @@ public class LCAUtils
 		template.setMainBlock(main);
 		return template.toString().trim();
 	}
+	
+	
+	
+	/**
+	 * Get the references from the dependency file
+	 * @throws Exception 
+	 */
+	private void processReferences(LCAObject obj, File objFile) throws Exception
+	{
+		DocumentBuilder builder;
+		Document doc;
+		XPath xpath;
+		XPathExpression expr;
+		HashSet<String> referencesSet = new HashSet<String>();
+		
+		try 
+		{
+			builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			doc = builder.parse(objFile);
+			xpath = XPathFactory.newInstance().newXPath();
+			
+			expr = xpath.compile("/Process/SubProcesses/SubProcess");
+			NodeList subProcessesList = (NodeList)expr.evaluate(doc, XPathConstants.NODESET);
+			
+			for (int count = 0; count < subProcessesList.getLength(); count++)
+			{
+				Node processNode = subProcessesList.item(count);
+				String serviceName = processNode.getAttributes().getNamedItem("serviceName").getTextContent();
+				String[] serviceTokens = serviceName.split("/");
+				
+				if (!referencesSet.contains(serviceName))
+				{
+					Reference reference = new Reference();
+					reference.setApplicationName(serviceTokens[1]);
+					reference.setApplicationVersion(serviceTokens[2]);
+					reference.setObjectName(serviceTokens[3]);
+					
+					obj.getReferences().add(reference);
+					referencesSet.add(serviceName);
+				}
+			}
+			
+		} 
+		catch (Exception e)
+		{
+			throw new Exception("Error Parsing References in dependency file", e);
+		}
+	}
+	
 }

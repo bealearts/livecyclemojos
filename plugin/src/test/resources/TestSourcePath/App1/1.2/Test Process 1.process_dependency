@@ -1,0 +1,6 @@
+<Process xmlns="http://adobe.com/workbench/process/dependency">
+  <SubProcesses>
+    <SubProcess date="Dec 9, 2011 7:23:10 PM" serviceName="/App2/2.3/Test Process 3.process" subProcessName="invoke4"/>
+    <SubProcess date="Dec 9, 2011 7:23:10 PM" serviceName="/App2/2.3/Test Process 3.process" subProcessName="invoke2"/>
+  </SubProcesses>
+</Process>
