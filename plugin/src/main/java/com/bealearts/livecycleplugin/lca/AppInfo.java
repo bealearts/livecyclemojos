@@ -44,12 +44,12 @@ public class AppInfo
 	}
 
 	
-	public String getRevision() {
-		return revision;
+	public String getVersion() {
+		return version;
 	}
 
-	public void setRevision(String revision) {
-		this.revision = revision;
+	public void setVersion(String version) {
+		this.version = version;
 	}	
 	
 	
@@ -58,7 +58,7 @@ public class AppInfo
 	 */
 	public String getMajorVersion()
 	{
-		return this.revision.substring( 0, this.revision.indexOf('.') );
+		return this.version.substring( 0, this.version.indexOf('.') );
 	}
 	
 	
@@ -67,7 +67,7 @@ public class AppInfo
 	 */
 	public String getMinorVersion()
 	{
-		return this.revision.substring( this.revision.indexOf('.')+1 );
+		return this.version.substring( this.version.indexOf('.')+1 );
 	}
 	
 	
@@ -76,6 +76,6 @@ public class AppInfo
 
 	private String name;
 	private List<LCAObject> lcaObjects = new ArrayList<LCAObject>();
-	private String revision;
+	private String version;
 
 }

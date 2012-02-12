@@ -81,7 +81,7 @@ public class LCAUtilsTest
 		assertThat(lcaDef.getApplications().get(0).getName(), equalTo("App1"));
 		assertThat(lcaDef.getApplications().get(0).getLcaObjects().size(), equalTo(2));
 		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(0).getName(), equalTo("Test Process 1.process"));
-		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(0).getRevision(), equalTo("1.2"));
+		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(0).getRevision(), equalTo("1.0"));
 		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(0).getType(), equalTo("process"));
 		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(0).getLcaObjects().size(), equalTo(1));
 		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(1).getLcaObjects().size(), equalTo(1));
@@ -102,7 +102,7 @@ public class LCAUtilsTest
 		
 		AppInfo app1 = new AppInfo();
 			app1.setName("App1");
-			app1.setRevision("1.2");
+			app1.setVersion("1.2");
 				LCAObject obj1 = new LCAObject();
 				obj1.setName("Test Process 1");
 				obj1.setType("process");
@@ -116,7 +116,7 @@ public class LCAUtilsTest
 		
 		AppInfo app2 = new AppInfo();
 			app2.setName("App2");
-			app2.setRevision("1.2");
+			app2.setVersion("1.2");
 				LCAObject obj2 = new LCAObject();
 				obj2.setName("Test Process 2");
 				obj2.setType("process");

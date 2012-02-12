@@ -60,7 +60,7 @@ public class LCAUtils
 			{
 				AppInfo appInfo = new AppInfo();
 				appInfo.setName(appName);
-				appInfo.setRevision(revisionDir.getName());
+				appInfo.setVersion(revisionDir.getName());
 				
 				
 				// Top level objects
@@ -68,7 +68,7 @@ public class LCAUtils
 				for (File objectFile:objectFiles)
 				{
 					LCAObject obj = new LCAObject();
-					obj.setRevision( appInfo.getRevision() );
+					obj.setRevision( "1.0" );
 					obj.setName(objectFile.getName());
 					obj.setType(objectFile.getName().substring(objectFile.getName().lastIndexOf('.')+1));
 					
