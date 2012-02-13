@@ -1,1 +1,5 @@
-<Process xmlns="http://adobe.com/workbench/process/dependency"/>
+<Process xmlns="http://adobe.com/workbench/process/dependency">
+  <SubProcesses>
+    <SubProcess date="18-Feb-2011 11:59:04" serviceName="localService" subProcessName="invoke"/>
+  </SubProcesses>
+</Process>

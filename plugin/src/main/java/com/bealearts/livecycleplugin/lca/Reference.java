@@ -51,7 +51,10 @@ public class Reference
 	 */
 	public String getApplicationMajorVersion()
 	{
-		return this.applicationVersion.substring( 0, this.applicationVersion.indexOf('.') );
+		if (this.applicationVersion == null)
+			return "";
+		else
+			return this.applicationVersion.substring( 0, this.applicationVersion.indexOf('.') );
 	}
 	
 	
@@ -60,7 +63,10 @@ public class Reference
 	 */
 	public String getApplicationMinorVersion()
 	{
-		return this.applicationVersion.substring( this.applicationVersion.indexOf('.')+1 );
+		if (this.applicationVersion == null)
+			return "";
+		else
+			return this.applicationVersion.substring( this.applicationVersion.indexOf('.')+1 );
 	}	
 	
 	

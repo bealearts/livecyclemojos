@@ -32,17 +32,15 @@ import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import com.bealearts.livecycleplugin.lca.AppInfo;
 import com.bealearts.livecycleplugin.lca.LCADefinition;
@@ -221,7 +219,12 @@ public class LCAUtils
 					topLevelObject.addSubBlock( new Block("secondaryobject", objSecond) );
 				
 				for (Reference reference:obj.getReferences())
-					topLevelObject.addSubBlock( new Block("reference", reference) );
+				{
+					if (reference.getApplicationName() == null)
+						topLevelObject.addSubBlock( new Block("nearreference", reference) );
+					else
+						topLevelObject.addSubBlock( new Block("farreference", reference) );
+				}
 				
 				appInfo.addSubBlock(topLevelObject);
 			}
@@ -265,16 +268,30 @@ public class LCAUtils
 				if (!referencesSet.contains(serviceName))
 				{
 					Reference reference = new Reference();
-					reference.setApplicationName(serviceTokens[1]);
-					reference.setApplicationVersion(serviceTokens[2]);
-					reference.setObjectName(serviceTokens[3]);
 					
+					if (serviceTokens.length < 3)
+					{
+						reference.setObjectName(serviceName);
+					}
+					else
+					{
+						reference.setApplicationName(serviceTokens[1]);
+						reference.setApplicationVersion(serviceTokens[2]);
+						reference.setObjectName(serviceTokens[3]);						
+					}
+						
 					obj.getReferences().add(reference);
 					referencesSet.add(serviceName);
 				}
 			}
 			
 		} 
+		catch (SAXParseException e)
+		{
+			// Skip premature end of file - i.e. empty file
+			if (!e.getMessage().equals("Premature end of file."))
+				throw new Exception("Error Parsing References in dependency file", e);
+		}
 		catch (Exception e)
 		{
 			throw new Exception("Error Parsing References in dependency file", e);

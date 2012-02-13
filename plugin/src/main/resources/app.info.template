@@ -46,7 +46,7 @@
 			</secondary-object>
 			<!-- END: secondaryobject -->
 			
-			<!-- BEGIN: reference -->
+			<!-- BEGIN: farreference -->
 			<reference>
 				<far-reference>
 					<application-name>{APPLICATIONNAME}</application-name>
@@ -55,7 +55,15 @@
 					<name>{OBJECTNAME}</name>
 				</far-reference>
 			</reference>
-			<!-- END: reference -->
+			<!-- END: farreference -->
+			
+			<!-- BEGIN: nearreference -->
+			<reference>
+				<near-reference>
+					<name>{OBJECTNAME}</name>
+				</near-reference>
+			</reference>
+			<!-- END: nearreference -->			
 			
 			<properties>rO0ABXNyABRqYXZhLnV0aWwuUHJvcGVydGllczkS0HpwNj6YAgABTAAIZGVmYXVsdHN0ABZMamF2YS91dGlsL1Byb3BlcnRpZXM7eHIAE2phdmEudXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAAAAAIdwgAAAALAAAAAHhw</properties>
 		</top-level-object>
