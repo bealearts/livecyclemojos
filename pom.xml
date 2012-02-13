@@ -6,7 +6,16 @@
 	<artifactId>livecyclemojos</artifactId>
 	<packaging>pom</packaging>
 	<version>1.0-SNAPSHOT</version>
+	
 	<name>LiveCycleMojos Maven Plugin</name>
+	<description>Maven Plugin to produce a LiveCycle Archive (LCA) from source files.</description>
+	<url>http://livecyclemojos.code.google.com/</url>
+
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 
 	<modules>
 		<module>plugin</module>
@@ -43,6 +52,30 @@
 		</dependency>
 
 	</dependencies>
+	
+	
+	
+	<scm>
+		<connection>scm:git:https://code.google.com/p/livecyclemojos/</connection>
+		<developerConnection>scm:git:https://code.google.com/p/livecyclemojos/</developerConnection>
+		<url>https://code.google.com/p/livecyclemojos/</url>
+	</scm>
 
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>david.beale</id>
+			<name>David Beale</name>
+			<email>david.beale@bealearts.co.uk</email>
+			<organization>BealeARTS</organization>
+		</developer>
+	</developers>
 
 </project>
