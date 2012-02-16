@@ -250,12 +250,16 @@ public class LCAUtils
 		XPathExpression expr;
 		HashSet<String> referencesSet = new HashSet<String>();
 		
+		// Skip if file is empty
+		if (objFile.length() == 0)
+			return;
+		
 		try 
 		{
 			builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			doc = builder.parse(objFile);
 			xpath = XPathFactory.newInstance().newXPath();
-			
+
 			expr = xpath.compile("/Process/SubProcesses/SubProcess");
 			NodeList subProcessesList = (NodeList)expr.evaluate(doc, XPathConstants.NODESET);
 			

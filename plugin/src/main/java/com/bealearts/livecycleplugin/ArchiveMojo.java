@@ -41,6 +41,7 @@ public class ArchiveMojo extends AbstractMojo
 	 * 
 	 * @parameter expression="${project.build.directory}"
 	 * @required
+	 * @readonly
 	 */
 	private File buildDirectory;
 	
@@ -51,6 +52,7 @@ public class ArchiveMojo extends AbstractMojo
 	 * 
 	 * @parameter expression="${project.build.finalName}"
 	 * @required
+	 * @readonly
 	 */
 	private String finalName;
 	
@@ -67,6 +69,8 @@ public class ArchiveMojo extends AbstractMojo
 	 * The using maven Project
 	 * 
 	 *  @parameter default-value="${project}" 
+	 *  @required
+	 *  @readonly
 	 */
 	private MavenProject project;
 

@@ -41,6 +41,7 @@ public class AppInfoMojo extends AbstractMojo
 	 * 
 	 * @parameter expression="${project.build.directory}"
 	 * @required
+	 * @readonly
 	 */
 	private File buildDirectory;
 
@@ -50,6 +51,7 @@ public class AppInfoMojo extends AbstractMojo
 	 * 
 	 * @parameter expression="${project.build.sourceDirectory}"
 	 * @required
+	 * @readonly
 	 */
 	private File sourceDirectory;
 	
