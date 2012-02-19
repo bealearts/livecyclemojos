@@ -83,9 +83,6 @@ public class LCAUtils
 				for (File objectFile:objectFiles)
 				{
 					LCAObject obj = new LCAObject();
-					obj.setRevision( "1.0" );
-					obj.setName(objectFile.getName());
-					obj.setType(objectFile.getName().substring(objectFile.getName().lastIndexOf('.')+1));
 					
 					this.processObjectFile(obj, objectFile);
 					
@@ -94,10 +91,8 @@ public class LCAUtils
 					for (File secondaryObjectFile:secondaryObjectFiles)
 					{
 						LCAObject secObj = new LCAObject();
-						secObj.setName(secondaryObjectFile.getName());
-						secObj.setType(secondaryObjectFile.getName().substring(secondaryObjectFile.getName().lastIndexOf('.')+1));
 						
-						this.processDependencyFile(obj, secondaryObjectFile);
+						this.processDependencyFile(obj, secObj, secondaryObjectFile);
 						
 						obj.getLcaObjects().add(secObj);
 					}
@@ -251,6 +246,10 @@ public class LCAUtils
 		XPath xpath;
 		XPathExpression expr;
 		
+		obj.setRevision( "1.0" );
+		obj.setName(objFile.getName());
+		obj.setType(objFile.getName().substring(objFile.getName().lastIndexOf('.')+1));
+		
 		// Skip if file is empty
 		if (objFile.length() == 0)
 			return;
@@ -258,24 +257,27 @@ public class LCAUtils
 		try 
 		{
 			builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			doc = builder.parse(objFile);
-			xpath = XPathFactory.newInstance().newXPath();
 
-			expr = xpath.compile("/process/description");
-			Node descriptionNode = (Node)expr.evaluate(doc, XPathConstants.NODE);
-			
-			if (descriptionNode != null)
-				obj.setDescription( descriptionNode.getTextContent() );
+			if ( obj.getType().equals("process") )
+			{
+				doc = builder.parse(objFile);
+				xpath = XPathFactory.newInstance().newXPath();
+				expr = xpath.compile("/process/description");
+				Node descriptionNode = (Node)expr.evaluate(doc, XPathConstants.NODE);
+				
+				if (descriptionNode != null)
+					obj.setDescription( descriptionNode.getTextContent() );
+			}
 		} 
 		catch (SAXParseException e)
 		{
 			// Skip premature end of file - i.e. empty file
 			if (!e.getMessage().equals("Premature end of file."))
-				throw new Exception("Error Parsing References in object file", e);
+				throw new Exception("Error Parsing object file", e);
 		}
 		catch (Exception e)
 		{
-			throw new Exception("Error Parsing References in object file", e);
+			throw new Exception("Error Parsing object file", e);
 		}
 	}
 	
@@ -285,7 +287,7 @@ public class LCAUtils
 	 * Get the references from the dependency file
 	 * @throws Exception 
 	 */
-	private void processDependencyFile(LCAObject obj, File objFile) throws Exception
+	private void processDependencyFile(LCAObject obj, LCAObject secObj, File secondaryObjectFile) throws Exception
 	{
 		DocumentBuilder builder;
 		Document doc;
@@ -293,42 +295,48 @@ public class LCAUtils
 		XPathExpression expr;
 		HashSet<String> referencesSet = new HashSet<String>();
 		
+		secObj.setName(secondaryObjectFile.getName());
+		secObj.setType(secondaryObjectFile.getName().substring(secondaryObjectFile.getName().lastIndexOf('.')+1));
+		
 		// Skip if file is empty
-		if (objFile.length() == 0)
+		if (secondaryObjectFile.length() == 0)
 			return;
 		
 		try 
 		{
 			builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			doc = builder.parse(objFile);
-			xpath = XPathFactory.newInstance().newXPath();
 
-			expr = xpath.compile("/Process/SubProcesses/SubProcess");
-			NodeList subProcessesList = (NodeList)expr.evaluate(doc, XPathConstants.NODESET);
-			
-			for (int count = 0; count < subProcessesList.getLength(); count++)
+			if ( secObj.getType().equals("process_dependency") )
 			{
-				Node processNode = subProcessesList.item(count);
-				String serviceName = processNode.getAttributes().getNamedItem("serviceName").getTextContent();
-				String[] serviceTokens = serviceName.split("/");
+				doc = builder.parse(secondaryObjectFile);
+				xpath = XPathFactory.newInstance().newXPath();
+				expr = xpath.compile("/Process/SubProcesses/SubProcess");
+				NodeList subProcessesList = (NodeList)expr.evaluate(doc, XPathConstants.NODESET);
 				
-				if (!referencesSet.contains(serviceName))
+				for (int count = 0; count < subProcessesList.getLength(); count++)
 				{
-					Reference reference = new Reference();
+					Node processNode = subProcessesList.item(count);
+					String serviceName = processNode.getAttributes().getNamedItem("serviceName").getTextContent();
+					String[] serviceTokens = serviceName.split("/");
 					
-					if (serviceTokens.length < 3)
+					if (!referencesSet.contains(serviceName))
 					{
-						reference.setObjectName(serviceName);
-					}
-					else
-					{
-						reference.setApplicationName(serviceTokens[1]);
-						reference.setApplicationVersion(serviceTokens[2]);
-						reference.setObjectName(serviceTokens[3]);						
-					}
+						Reference reference = new Reference();
 						
-					obj.getReferences().add(reference);
-					referencesSet.add(serviceName);
+						if (serviceTokens.length < 3)
+						{
+							reference.setObjectName(serviceName);
+						}
+						else
+						{
+							reference.setApplicationName(serviceTokens[1]);
+							reference.setApplicationVersion(serviceTokens[2]);
+							reference.setObjectName(serviceTokens[3]);						
+						}
+							
+						obj.getReferences().add(reference);
+						referencesSet.add(serviceName);
+					}
 				}
 			}
 			
@@ -337,11 +345,11 @@ public class LCAUtils
 		{
 			// Skip premature end of file - i.e. empty file
 			if (!e.getMessage().equals("Premature end of file."))
-				throw new Exception("Error Parsing References in dependency file", e);
+				throw new Exception("Error Parsing dependency file", e);
 		}
 		catch (Exception e)
 		{
-			throw new Exception("Error Parsing References in dependency file", e);
+			throw new Exception("Error Parsing dependency file", e);
 		}
 	}
 	
