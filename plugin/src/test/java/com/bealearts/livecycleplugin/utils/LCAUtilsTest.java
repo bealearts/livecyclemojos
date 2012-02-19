@@ -122,6 +122,7 @@ public class LCAUtilsTest
 				LCAObject obj2 = new LCAObject();
 				obj2.setName("Test Process 2");
 				obj2.setType("process");
+				obj2.setDescription("I'm a test process");
 				obj2.setRevision("1.2");
 					LCAObject objSecond2 = new LCAObject();
 					objSecond2.setName("Test Process 2.process_dependency");
@@ -156,6 +157,7 @@ public class LCAUtilsTest
 		
 		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[2]/name", usingNamespaces, equalTo("App2")));
 		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[2]/top-level-object[1]/reference[1]/far-reference[1]/application-name", usingNamespaces, equalTo("App1")));
+		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[2]/top-level-object[1]/description", usingNamespaces, equalTo("I'm a test process")));
 	}
 	
 	

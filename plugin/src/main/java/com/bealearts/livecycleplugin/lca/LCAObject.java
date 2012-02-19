@@ -35,6 +35,7 @@ public class LCAObject
 		this.name = name;
 	}
 	
+	
 	public String getType() {
 		return type;
 	}
@@ -42,6 +43,16 @@ public class LCAObject
 	public void setType(String type) {
 		this.type = type;
 	}	
+	
+	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
 
 	public String getRevision() {
 		return revision;
@@ -50,6 +61,7 @@ public class LCAObject
 	public void setRevision(String revision) {
 		this.revision = revision;
 	}
+	
 	
 	public List<LCAObject> getLcaObjects() {
 		return lcaObjects;
@@ -74,6 +86,7 @@ public class LCAObject
 
 	private String name;
 	private String type;
+	private String description = "";
 	private String revision;
 	private List<LCAObject> lcaObjects = new ArrayList<LCAObject>();
 	private List<Reference> references = new ArrayList<Reference>();

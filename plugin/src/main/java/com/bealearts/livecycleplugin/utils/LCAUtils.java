@@ -87,6 +87,8 @@ public class LCAUtils
 					obj.setName(objectFile.getName());
 					obj.setType(objectFile.getName().substring(objectFile.getName().lastIndexOf('.')+1));
 					
+					this.processObjectFile(obj, objectFile);
+					
 					// Secondary level objects
 					File[] secondaryObjectFiles = revisionDir.listFiles( new SecondaryObjectFilter(obj.getName()) );
 					for (File secondaryObjectFile:secondaryObjectFiles)
@@ -95,7 +97,7 @@ public class LCAUtils
 						secObj.setName(secondaryObjectFile.getName());
 						secObj.setType(secondaryObjectFile.getName().substring(secondaryObjectFile.getName().lastIndexOf('.')+1));
 						
-						this.processReferences(obj, secondaryObjectFile);
+						this.processDependencyFile(obj, secondaryObjectFile);
 						
 						obj.getLcaObjects().add(secObj);
 					}
@@ -239,10 +241,50 @@ public class LCAUtils
 	
 	
 	/**
+	 * Get the description from the object file
+	 * @throws Exception 
+	 */
+	private void processObjectFile(LCAObject obj, File objFile) throws Exception
+	{
+		DocumentBuilder builder;
+		Document doc;
+		XPath xpath;
+		XPathExpression expr;
+		
+		// Skip if file is empty
+		if (objFile.length() == 0)
+			return;
+		
+		try 
+		{
+			builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			doc = builder.parse(objFile);
+			xpath = XPathFactory.newInstance().newXPath();
+
+			expr = xpath.compile("/Process/SubProcesses/SubProcess");
+			//NodeList subProcessesList = (NodeList)expr.evaluate(doc, XPathConstants.NODESET);
+
+			
+		} 
+		catch (SAXParseException e)
+		{
+			// Skip premature end of file - i.e. empty file
+			if (!e.getMessage().equals("Premature end of file."))
+				throw new Exception("Error Parsing References in object file", e);
+		}
+		catch (Exception e)
+		{
+			throw new Exception("Error Parsing References in object file", e);
+		}
+	}
+	
+	
+	
+	/**
 	 * Get the references from the dependency file
 	 * @throws Exception 
 	 */
-	private void processReferences(LCAObject obj, File objFile) throws Exception
+	private void processDependencyFile(LCAObject obj, File objFile) throws Exception
 	{
 		DocumentBuilder builder;
 		Document doc;
@@ -301,5 +343,6 @@ public class LCAUtils
 			throw new Exception("Error Parsing References in dependency file", e);
 		}
 	}
+	
 	
 }

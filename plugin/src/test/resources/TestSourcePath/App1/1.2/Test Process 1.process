@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sup:process xmlns:sup="http://adobe.com/workflow/template/support" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jav="http://www.adobe.com/2006/JavaTypes" deprecated="false" monitor-access="false" transaction-timeout="-1" transaction-propagation="REQUIRES NEW" type="asynchronous" pof-object-type="" name="Test Process 1" id="P1301317709346">
+	<sup:title>Test Process 1</sup:title>
+	<sup:description>A Test Process</sup:description>
+</sup:process>

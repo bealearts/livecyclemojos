@@ -37,7 +37,7 @@
 			<revision>{REVISION}</revision>
 			<deployment-id/>
 			<deployment-version/>
-			<description/>
+			<description>{DESCRIPTION}</description>
 			
 			<!-- BEGIN: secondaryobject -->
 			<secondary-object>
