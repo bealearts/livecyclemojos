@@ -261,10 +261,11 @@ public class LCAUtils
 			doc = builder.parse(objFile);
 			xpath = XPathFactory.newInstance().newXPath();
 
-			expr = xpath.compile("/Process/SubProcesses/SubProcess");
-			//NodeList subProcessesList = (NodeList)expr.evaluate(doc, XPathConstants.NODESET);
-
+			expr = xpath.compile("/process/description");
+			Node descriptionNode = (Node)expr.evaluate(doc, XPathConstants.NODE);
 			
+			if (descriptionNode != null)
+				obj.setDescription( descriptionNode.getTextContent() );
 		} 
 		catch (SAXParseException e)
 		{

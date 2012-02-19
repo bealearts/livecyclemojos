@@ -84,6 +84,7 @@ public class LCAUtilsTest
 		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(0).getName(), equalTo("Test Process 1.process"));
 		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(0).getRevision(), equalTo("1.0"));
 		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(0).getType(), equalTo("process"));
+		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(0).getDescription(), equalTo("A Test Process"));
 		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(0).getLcaObjects().size(), equalTo(1));
 		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(0).getReferences().size(), equalTo(1));
 		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(1).getLcaObjects().size(), equalTo(1));
