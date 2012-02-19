@@ -100,7 +100,7 @@ public class AppInfoMojo extends AbstractMojo
 		
 		
 		
-		LCAUtils lcaUtils = new LCAUtils();
+		LCAUtils lcaUtils = new LCAUtils(this.getLog());
 		
 		LCADefinition lcaDef;
 		try 

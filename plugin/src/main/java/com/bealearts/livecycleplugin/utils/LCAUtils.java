@@ -49,12 +49,32 @@ import com.bealearts.livecycleplugin.lca.Reference;
 import com.bealearts.template.Block;
 import com.bealearts.template.SimpleTemplate;
 
+import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.plugin.logging.SystemStreamLog;
+
 /**
  * LiveCycle Archive Utilities
  */
 public class LCAUtils
 {
 	/* PUBLIC */
+	
+	/**
+	 * Default Constructor
+	 */
+	public LCAUtils()
+	{
+		this.logger = new SystemStreamLog();
+	}
+	
+	/**
+	 * Constructor which sets the logger, e.g. When used in a Mojo
+	 */
+	public LCAUtils(Log logger)
+	{
+		this.logger = logger;
+	}
+	
 	
 	
 	/**
@@ -64,6 +84,8 @@ public class LCAUtils
 	public LCADefinition parseSourceFiles(File sourcePath) throws Exception
 	{
 		LCADefinition lcaDefinition = new LCADefinition();
+		
+		this.logger.info("Generating app.info archive descriptor");
 		
 		File[] applicationDirs = sourcePath.listFiles(this.dirFilter);
 		for (File applicationDir:applicationDirs)
@@ -83,6 +105,8 @@ public class LCAUtils
 				for (File objectFile:objectFiles)
 				{
 					LCAObject obj = new LCAObject();
+					
+					this.logger.info("Processing object: " + appInfo.getName() + "\\" + appInfo.getVersion() + "\\" + objectFile.getName());
 					
 					this.processObjectFile(obj, objectFile);
 					
@@ -155,6 +179,9 @@ public class LCAUtils
 	/* PROTECTED */
 	
 	/* PRIVATE */
+	
+	private Log logger;
+	
 	
 	
 	/**
@@ -249,6 +276,7 @@ public class LCAUtils
 		obj.setRevision( "1.0" );
 		obj.setName(objFile.getName());
 		obj.setType(objFile.getName().substring(objFile.getName().lastIndexOf('.')+1));
+
 		
 		// Skip if file is empty
 		if (objFile.length() == 0)
