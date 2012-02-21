@@ -214,7 +214,7 @@ public class LCAUtils
 	{
 	    public boolean accept(File file) 
 	    {
-	        return !file.isDirectory() && !file.getName().endsWith("_dependency") && !file.getName().endsWith("dci");
+	        return !file.isDirectory() && !file.getName().endsWith("_dependency") && !file.getName().endsWith("dci") && !file.getName().endsWith("compjar");
 	    }
 	};
 	
