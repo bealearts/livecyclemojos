@@ -92,8 +92,8 @@ public class LCAUtilsTest
 		
 		assertThat(lcaDef.getApplications().get(1).getName(), equalTo("App2"));
 		assertThat(lcaDef.getApplications().get(1).getLcaObjects().get(3).getName(), equalTo("Test Process 3.process"));
-		List<Reference> d = lcaDef.getApplications().get(1).getLcaObjects().get(3).getReferences();
 		assertThat(lcaDef.getApplications().get(1).getLcaObjects().get(3).getReferences().get(1).getObjectName(), equalTo("pdf1.pdf"));
+		assertThat(lcaDef.getApplications().get(1).getLcaObjects().get(3).getReferences().get(2).getObjectName(), equalTo("ddx1.ddx"));
 	}
 	
 	

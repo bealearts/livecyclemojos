@@ -386,6 +386,26 @@ public class LCAUtils
 						referencesSet.add(documentName);
 					}
 				}
+				
+				
+				expr = xpath.compile("/Process/Activities/Activity/References/Reference");
+				NodeList activityReferencesList = (NodeList)expr.evaluate(doc, XPathConstants.NODESET);
+				documentName = "";
+				
+				for (int count = 0; count < activityReferencesList.getLength(); count++)
+				{
+					if (!referencesSet.contains(documentName))
+					{
+						Node activityReferencesNode = activityReferencesList.item(count);
+						documentName = activityReferencesNode.getAttributes().getNamedItem("uri").getTextContent();
+						
+						Reference reference = new Reference();
+						reference.setObjectName(documentName);
+						
+						obj.getReferences().add(reference);
+						referencesSet.add(documentName);
+					}
+				}				
 			}
 			
 		} 
