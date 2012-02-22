@@ -95,34 +95,12 @@ public class LCAUtils
 			File[] revisionDirs = applicationDir.listFiles(this.dirFilter);
 			for (File revisionDir:revisionDirs)
 			{
+			
 				AppInfo appInfo = new AppInfo();
 				appInfo.setName(appName);
 				appInfo.setVersion(revisionDir.getName());
-				
-				
-				// Top level objects
-				File[] objectFiles = revisionDir.listFiles(this.topLevelObjectFilter);
-				for (File objectFile:objectFiles)
-				{
-					LCAObject obj = new LCAObject();
-					
-					this.logger.info("Processing object: " + appInfo.getName() + "\\" + appInfo.getVersion() + "\\" + objectFile.getName());
-					
-					this.processObjectFile(obj, objectFile);
-					
-					// Secondary level objects
-					File[] secondaryObjectFiles = revisionDir.listFiles( new SecondaryObjectFilter(obj.getName()) );
-					for (File secondaryObjectFile:secondaryObjectFiles)
-					{
-						LCAObject secObj = new LCAObject();
-						
-						this.processDependencyFile(obj, secObj, secondaryObjectFile);
-						
-						obj.getLcaObjects().add(secObj);
-					}
-					
-					appInfo.getLcaObjects().add(obj);
-				}
+			
+				this.parseFileSystemForObjects(revisionDir, appInfo, "");
 				
 				lcaDefinition.getApplications().add(appInfo);
 			}
@@ -266,15 +244,17 @@ public class LCAUtils
 	 * Get the description from the object file
 	 * @throws Exception 
 	 */
-	private void processObjectFile(LCAObject obj, File objFile) throws Exception
+	private void processObjectFile(LCAObject obj, File objFile, AppInfo appInfo, String parentNamePath) throws Exception
 	{
 		DocumentBuilder builder;
 		Document doc;
 		XPath xpath;
 		XPathExpression expr;
 		
+		this.logger.info("Processing object: " + appInfo.getName() + "/" + appInfo.getVersion() + "/" + parentNamePath + objFile.getName());
+		
 		obj.setRevision( "1.0" );
-		obj.setName(objFile.getName());
+		obj.setName(parentNamePath + objFile.getName());
 		obj.setType(objFile.getName().substring(objFile.getName().lastIndexOf('.')+1));
 
 		
@@ -422,4 +402,43 @@ public class LCAUtils
 	}
 	
 	
+	
+	
+	/**
+	 * Parse file system for LCA objects
+	 * Recursive
+	 * @throws Exception 
+	 */
+	private void parseFileSystemForObjects(File sourceDir, AppInfo appInfo, String parentNamePath) throws Exception
+	{		
+		// Top level objects
+		File[] objectFiles = sourceDir.listFiles(this.topLevelObjectFilter);
+		for (File objectFile:objectFiles)
+		{
+			LCAObject obj = new LCAObject();
+			
+			this.processObjectFile(obj, objectFile, appInfo, parentNamePath);
+			
+			// Secondary level objects
+			File[] secondaryObjectFiles = sourceDir.listFiles( new SecondaryObjectFilter(obj.getName()) );
+			for (File secondaryObjectFile:secondaryObjectFiles)
+			{
+				LCAObject secObj = new LCAObject();
+				
+				this.processDependencyFile(obj, secObj, secondaryObjectFile);
+				
+				obj.getLcaObjects().add(secObj);
+			}
+			
+			appInfo.getLcaObjects().add(obj);
+		}
+		
+		
+		// Sub Folders
+		File[] subFolders = sourceDir.listFiles(this.dirFilter);
+		for (File subFolder:subFolders)
+		{
+			this.parseFileSystemForObjects(subFolder, appInfo, parentNamePath + subFolder.getName() + "/");
+		}
+	}
 }
