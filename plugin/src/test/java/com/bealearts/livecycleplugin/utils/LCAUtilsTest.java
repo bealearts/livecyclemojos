@@ -95,6 +95,7 @@ public class LCAUtilsTest
 		assertThat(lcaDef.getApplications().get(1).getLcaObjects().get(3).getReferences().get(1).getObjectName(), equalTo("pdf1.pdf"));
 		assertThat(lcaDef.getApplications().get(1).getLcaObjects().get(3).getReferences().get(2).getObjectName(), equalTo("ddx1.ddx"));
 		assertThat(lcaDef.getApplications().get(1).getLcaObjects().get(4).getName(), equalTo("Resources/Image1.png"));
+		assertThat(lcaDef.getApplications().get(1).getLcaObjects().get(0).getName(), equalTo("Component&Component 1.component"));
 	}
 	
 	
@@ -116,7 +117,7 @@ public class LCAUtilsTest
 				obj1.setType("process");
 				obj1.setRevision("1.2");
 					LCAObject objSecond1 = new LCAObject();
-					objSecond1.setName("Test Process 1.process_dependency");
+					objSecond1.setName("Test&Process 1.process_dependency");
 					objSecond1.setType("process_dependency");
 				obj1.getLcaObjects().add(objSecond1);
 			app1.getLcaObjects().add(obj1);	
@@ -157,7 +158,7 @@ public class LCAUtilsTest
 		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[1]/top-level-object[1]/name", usingNamespaces, equalTo("Test Process 1")));
 		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[1]/top-level-object[1]/type", usingNamespaces, equalTo("process")));
 		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[1]/top-level-object[1]/revision", usingNamespaces, equalTo("1.2")));
-		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[1]/top-level-object[1]/secondary-object[1]/name", usingNamespaces, equalTo("Test Process 1.process_dependency")));
+		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[1]/top-level-object[1]/secondary-object[1]/name", usingNamespaces, equalTo("Test&Process 1.process_dependency")));
 		assertThat(the(output), hasXPath("/lca:lca_info/lca:application-info[1]/top-level-object[1]/secondary-object[1]/type", usingNamespaces, equalTo("process_dependency")));
 		
 		

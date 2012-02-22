@@ -118,6 +118,7 @@ public class LCAUtils
 	public String renderAppInfo(File templateFile, LCADefinition lcaDefinition) throws FileNotFoundException
 	{
 		SimpleTemplate template = new SimpleTemplate(templateFile);
+		template.setEscapeVariables(true);
 		
 		return this.processTemplate(template, lcaDefinition);
 	}
@@ -129,6 +130,7 @@ public class LCAUtils
 	public String renderAppInfo(InputStream templateStream, LCADefinition lcaDefinition) throws IOException
 	{
 		SimpleTemplate template = new SimpleTemplate(templateStream);
+		template.setEscapeVariables(true);
 		
 		return this.processTemplate(template, lcaDefinition);
 	}

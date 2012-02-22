@@ -57,6 +57,21 @@ public class SimpleTemplate
 	}
 	
 	
+
+	/**
+	 * Should the template variables be XML escaped when written to the output
+	 */
+	public boolean isEscapeVariables() 
+	{
+		return escapeVariables;
+	}
+
+	public void setEscapeVariables(boolean escapeVariables) 
+	{
+		this.escapeVariables = escapeVariables;
+	}
+	
+	
 	/**
 	 * Load a template file
 	 * @throws FileNotFoundException 
@@ -145,6 +160,8 @@ public class SimpleTemplate
 	
 	private Map<String, Object> globalVariables;
 	
+	private boolean escapeVariables = false; 
+	
 	
 	/**
 	 * Parse the template
@@ -213,7 +230,7 @@ public class SimpleTemplate
 		{
 			
 			if (contentItem instanceof TextContent)
-				result.append( ((TextContent)contentItem).render(block.getData(), this.globalVariables) );
+				result.append( ((TextContent)contentItem).render(block.getData(), this.globalVariables, this.escapeVariables) );
 			else
 			{
 				String contentItemPath = ((BlockContent)contentItem).getBlockPath();

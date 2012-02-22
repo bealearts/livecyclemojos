@@ -57,7 +57,7 @@ public class TextContent implements ITemplateContent
 	/**
 	 * Render text content
 	 */
-	public String render(Object blockData, Map<String, Object> globalVariables)
+	public String render(Object blockData, Map<String, Object> globalVariables, boolean escapeVariables)
 	{
 		Map<String, Object> vars = this.getBeanProperties(blockData);
 		String renderedContent = this.content;
@@ -71,11 +71,11 @@ public class TextContent implements ITemplateContent
 			
 			if ( vars.containsKey(match) )
 			{
-				renderedContent = renderedContent.replaceFirst("\\{"+match+"\\}", this.escape(vars.get(match).toString()));
+				renderedContent = renderedContent.replaceFirst("\\{"+match+"\\}", this.escape(vars.get(match).toString(), escapeVariables));
 			}
 			else if (globalVariables != null && globalVariables.containsKey(match))
 			{
-				renderedContent = renderedContent.replaceFirst("\\{"+match+"\\}", this.escape(globalVariables.get(match).toString()));
+				renderedContent = renderedContent.replaceFirst("\\{"+match+"\\}", this.escape(globalVariables.get(match).toString(), escapeVariables));
 			}
 		}
 		
@@ -127,11 +127,19 @@ public class TextContent implements ITemplateContent
 	/**
 	 * Template parsing uses regex replace to insert result text,
 	 * which means that special characters in replacement string must be escaped.
+	 * 
+	 * Variables may also be XML escaped if required (XML output)
+	 * 
 	 * @param replacement The text that should appear in output.
 	 * @return Text escaped so that it works as String.replaceFirst replacement.
 	 */
-	protected String escape(String replacement) 
+	protected String escape(String replacement, boolean escapeVariables) 
 	{
-		return replacement.replace("\\", "\\\\").replace("$", "\\$");
+		String result = replacement;
+		
+		if (escapeVariables)
+			result = result.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+		
+		return result.replace("\\", "\\\\").replace("$", "\\$");
 	}
 }
