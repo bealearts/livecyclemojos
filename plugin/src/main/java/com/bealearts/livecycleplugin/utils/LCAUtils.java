@@ -366,6 +366,26 @@ public class LCAUtils
 						referencesSet.add(serviceName);
 					}
 				}
+				
+				
+				expr = xpath.compile("/Process/Variables/Variable[@type=\"java:document\"]");
+				NodeList variablesList = (NodeList)expr.evaluate(doc, XPathConstants.NODESET);
+				String documentName= "";
+				
+				for (int count = 0; count < variablesList.getLength(); count++)
+				{
+					if (!referencesSet.contains(documentName))
+					{
+						Node variableNode = variablesList.item(count);
+						documentName = variableNode.getAttributes().getNamedItem("uri").getTextContent();
+						
+						Reference reference = new Reference();
+						reference.setObjectName(documentName);
+						
+						obj.getReferences().add(reference);
+						referencesSet.add(documentName);
+					}
+				}
 			}
 			
 		} 

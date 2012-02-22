@@ -21,6 +21,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 import javax.xml.namespace.NamespaceContext;
 
@@ -90,6 +91,9 @@ public class LCAUtilsTest
 		assertThat(lcaDef.getApplications().get(0).getLcaObjects().get(1).getLcaObjects().size(), equalTo(1));
 		
 		assertThat(lcaDef.getApplications().get(1).getName(), equalTo("App2"));
+		assertThat(lcaDef.getApplications().get(1).getLcaObjects().get(3).getName(), equalTo("Test Process 3.process"));
+		List<Reference> d = lcaDef.getApplications().get(1).getLcaObjects().get(3).getReferences();
+		assertThat(lcaDef.getApplications().get(1).getLcaObjects().get(3).getReferences().get(1).getObjectName(), equalTo("pdf1.pdf"));
 	}
 	
 	

@@ -2,4 +2,14 @@
   <SubProcesses>
     <SubProcess date="18-Feb-2011 11:59:04" serviceName="localService" subProcessName="invoke"/>
   </SubProcesses>
+  <Activities>
+    <Activity serviceName="SomeService" activityName="AnAction">
+      <References>
+        <Reference fieldname="doc" date="02-Feb-2012 11:40:29" uri="ddx1.ddx"/>
+      </References>
+    </Activity>
+  </Activities>
+  <Variables>
+    <Variable date="01-Feb-2012 15:55:36" variableName="pdfFile" type="java:document" uri="pdf1.pdf"/>
+  </Variables>
 </Process>
