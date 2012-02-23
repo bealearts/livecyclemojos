@@ -16,12 +16,15 @@
 
 package com.bealearts.livecycleplugin.utils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
@@ -29,6 +32,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -42,6 +46,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXParseException;
 
+import com.bealearts.livecycleplugin.utils.Base64Coder;
 import com.bealearts.livecycleplugin.lca.AppInfo;
 import com.bealearts.livecycleplugin.lca.LCADefinition;
 import com.bealearts.livecycleplugin.lca.LCAObject;
@@ -266,10 +271,9 @@ public class LCAUtils
 		
 		try 
 		{
-			builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-
 			if ( obj.getType().equals("process") )
 			{
+				builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 				doc = builder.parse(objFile);
 				xpath = XPathFactory.newInstance().newXPath();
 				expr = xpath.compile("/process/description");
@@ -277,6 +281,18 @@ public class LCAUtils
 				
 				if (descriptionNode != null)
 					obj.setDescription( descriptionNode.getTextContent() );
+			}
+			else if ( obj.getType().equals("component") )
+			{
+				Properties props = new Properties();
+				props.load(new FileInputStream(objFile));
+				
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		        ObjectOutputStream oos = new ObjectOutputStream( baos );
+		        oos.writeObject(props);
+		        oos.close();
+
+		        obj.setProperties( new String(Base64Coder.encode(baos.toByteArray())) );
 			}
 		} 
 		catch (SAXParseException e)

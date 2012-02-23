@@ -35,8 +35,6 @@
 			<name>{NAME}</name>
 			<type>{TYPE}</type>
 			<revision>{REVISION}</revision>
-			<deployment-id/>
-			<deployment-version/>
 			<description>{DESCRIPTION}</description>
 			
 			<!-- BEGIN: secondaryobject -->
@@ -65,7 +63,7 @@
 			</reference>
 			<!-- END: nearreference -->			
 			
-			<properties>rO0ABXNyABRqYXZhLnV0aWwuUHJvcGVydGllczkS0HpwNj6YAgABTAAIZGVmYXVsdHN0ABZMamF2YS91dGlsL1Byb3BlcnRpZXM7eHIAE2phdmEudXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAAAAAIdwgAAAALAAAAAHhw</properties>
+		    <properties>{PROPERTIES}</properties>
 		</top-level-object>
 		<!-- END: toplevelobject -->
     

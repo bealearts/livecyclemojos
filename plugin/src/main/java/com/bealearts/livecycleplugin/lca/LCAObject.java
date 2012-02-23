@@ -81,6 +81,14 @@ public class LCAObject
 	}	
 	
 	
+	public String getProperties() {
+		return properties;
+	}
+
+	public void setProperties(String properties) {
+		this.properties = properties;
+	}	
+	
 	/* PRIVATE */
 
 
@@ -90,4 +98,5 @@ public class LCAObject
 	private String revision;
 	private List<LCAObject> lcaObjects = new ArrayList<LCAObject>();
 	private List<Reference> references = new ArrayList<Reference>();
+	private String properties = "rO0ABXNyABRqYXZhLnV0aWwuUHJvcGVydGllczkS0HpwNj6YAgABTAAIZGVmYXVsdHN0ABZMamF2YS91dGlsL1Byb3BlcnRpZXM7eHIAE2phdmEudXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAAAAAIdwgAAAALAAAAAHhw";	// Default empty properties object serialization
 }
