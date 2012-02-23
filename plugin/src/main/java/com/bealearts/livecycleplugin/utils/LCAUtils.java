@@ -199,7 +199,7 @@ public class LCAUtils
 	{
 	    public boolean accept(File file) 
 	    {
-	        return !file.isDirectory() && !file.getName().endsWith("_dependency") && !file.getName().endsWith("dci") && !file.getName().endsWith("compjar");
+	        return file.isDirectory() || (!file.getName().endsWith("_dependency") && !file.getName().endsWith("dci") && !file.getName().endsWith("compjar"));
 	    }
 	};
 	
@@ -429,34 +429,34 @@ public class LCAUtils
 	 */
 	private void parseFileSystemForObjects(File sourceDir, AppInfo appInfo, String parentNamePath) throws Exception
 	{		
-		// Top level objects
+		// NOTE: It is important to create the LCAObjects in the same order as the file system objects
+		
+		// Top level objects & subfolders
 		File[] objectFiles = sourceDir.listFiles(this.topLevelObjectFilter);
 		for (File objectFile:objectFiles)
 		{
-			LCAObject obj = new LCAObject();
-			
-			this.processObjectFile(obj, objectFile, appInfo, parentNamePath);
-			
-			// Secondary level objects
-			File[] secondaryObjectFiles = sourceDir.listFiles( new SecondaryObjectFilter(obj.getName()) );
-			for (File secondaryObjectFile:secondaryObjectFiles)
+			if (objectFile.isDirectory())
+				this.parseFileSystemForObjects(objectFile, appInfo, parentNamePath + objectFile.getName() + "/");
+			else
 			{
-				LCAObject secObj = new LCAObject();
-				
-				this.processDependencyFile(obj, secObj, secondaryObjectFile);
-				
-				obj.getLcaObjects().add(secObj);
-			}
 			
-			appInfo.getLcaObjects().add(obj);
-		}
-		
-		
-		// Sub Folders
-		File[] subFolders = sourceDir.listFiles(this.dirFilter);
-		for (File subFolder:subFolders)
-		{
-			this.parseFileSystemForObjects(subFolder, appInfo, parentNamePath + subFolder.getName() + "/");
+				LCAObject obj = new LCAObject();
+				
+				this.processObjectFile(obj, objectFile, appInfo, parentNamePath);
+				
+				// Secondary level objects
+				File[] secondaryObjectFiles = sourceDir.listFiles( new SecondaryObjectFilter(obj.getName()) );
+				for (File secondaryObjectFile:secondaryObjectFiles)
+				{
+					LCAObject secObj = new LCAObject();
+					
+					this.processDependencyFile(obj, secObj, secondaryObjectFile);
+					
+					obj.getLcaObjects().add(secObj);
+				}
+				
+				appInfo.getLcaObjects().add(obj);
+			}
 		}
 	}
 }
