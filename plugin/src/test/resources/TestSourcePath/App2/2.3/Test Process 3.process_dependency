@@ -12,4 +12,7 @@
   <Variables>
     <Variable date="01-Feb-2012 15:55:36" variableName="pdfFile" type="java:document" uri="pdf1.pdf"/>
   </Variables>
+  <Events>
+    <Event date="02-Feb-2012 17:35:36" eventTypeName="/someApp/6.1/someevent.event" eventName="someEvent"/>
+  </Events>  
 </Process>

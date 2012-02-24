@@ -92,8 +92,9 @@ public class LCAUtilsTest
 		
 		assertThat(lcaDef.getApplications().get(1).getName(), equalTo("App2"));
 		assertThat(lcaDef.getApplications().get(1).getLcaObjects().get(4).getName(), equalTo("Test Process 3.process"));
-		assertThat(lcaDef.getApplications().get(1).getLcaObjects().get(4).getReferences().get(1).getObjectName(), equalTo("pdf1.pdf"));
-		assertThat(lcaDef.getApplications().get(1).getLcaObjects().get(4).getReferences().get(2).getObjectName(), equalTo("ddx1.ddx"));
+		assertThat(lcaDef.getApplications().get(1).getLcaObjects().get(4).getReferences().get(1).getObjectName(), equalTo("someevent.event"));
+		assertThat(lcaDef.getApplications().get(1).getLcaObjects().get(4).getReferences().get(2).getObjectName(), equalTo("pdf1.pdf"));
+		assertThat(lcaDef.getApplications().get(1).getLcaObjects().get(4).getReferences().get(3).getObjectName(), equalTo("ddx1.ddx"));
 		assertThat(lcaDef.getApplications().get(1).getLcaObjects().get(3).getName(), equalTo("Resources/Image1.png"));
 		assertThat(lcaDef.getApplications().get(1).getLcaObjects().get(0).getName(), equalTo("Component&Component 1.component"));
 		assertThat(lcaDef.getApplications().get(1).getLcaObjects().get(0).getProperties(), equalTo("rO0ABXNyABRqYXZhLnV0aWwuUHJvcGVydGllczkS0HpwNj6YAgABTAAIZGVmYXVsdHN0ABZMamF2YS91dGlsL1Byb3BlcnRpZXM7eHIAE2phdmEudXRpbC5IYXNodGFibGUTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAAAAAIdwgAAAALAAAAAnQACUNvbXBvbmVudHQAC0NvbXBvbmVudCAxdAAHVmVyc2lvbnQAAzEuMHhw"));

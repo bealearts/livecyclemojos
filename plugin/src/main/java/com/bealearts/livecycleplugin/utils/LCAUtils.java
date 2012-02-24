@@ -336,6 +336,9 @@ public class LCAUtils
 			{
 				doc = builder.parse(secondaryObjectFile);
 				xpath = XPathFactory.newInstance().newXPath();
+				
+				
+				
 				expr = xpath.compile("/Process/SubProcesses/SubProcess");
 				NodeList subProcessesList = (NodeList)expr.evaluate(doc, XPathConstants.NODESET);
 				
@@ -364,6 +367,36 @@ public class LCAUtils
 						referencesSet.add(serviceName);
 					}
 				}
+				
+				
+				expr = xpath.compile("/Process/Events/Event");
+				NodeList eventList = (NodeList)expr.evaluate(doc, XPathConstants.NODESET);
+				
+				for (int count = 0; count < eventList.getLength(); count++)
+				{
+					Node eventNode = eventList.item(count);
+					String eventName = eventNode.getAttributes().getNamedItem("eventTypeName").getTextContent();
+					String[] serviceTokens = eventName.split("/");
+					
+					if (!referencesSet.contains(eventName))
+					{
+						Reference reference = new Reference();
+						
+						if (serviceTokens.length < 3)
+						{
+							reference.setObjectName(eventName);
+						}
+						else
+						{
+							reference.setApplicationName(serviceTokens[1]);
+							reference.setApplicationVersion(serviceTokens[2]);
+							reference.setObjectName(serviceTokens[3]);						
+						}
+							
+						obj.getReferences().add(reference);
+						referencesSet.add(eventName);
+					}
+				}				
 				
 				
 				expr = xpath.compile("/Process/Variables/Variable[@type=\"java:document\"]");
