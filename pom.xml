@@ -18,6 +18,7 @@
 	</parent>
 
 	<modules>
+        <module>lca-utils</module>
 		<module>plugin</module>
 		<module>integration</module>
 	</modules>
