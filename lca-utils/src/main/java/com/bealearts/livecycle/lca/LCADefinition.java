@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.bealearts.livecycleplugin.lca;
+package com.bealearts.livecycle.lca;
 
 import java.util.ArrayList;
 import java.util.List;

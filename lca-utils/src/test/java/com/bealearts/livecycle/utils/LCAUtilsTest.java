@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.bealearts.livecycleplugin.utils;
+package com.bealearts.livecycle.utils;
 
 import static org.junit.Assert.*;
 
@@ -34,10 +34,11 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.xmlmatchers.xpath.HasXPath.*;
 import static org.xmlmatchers.transform.XmlConverters.the;
 
-import com.bealearts.livecycleplugin.lca.AppInfo;
-import com.bealearts.livecycleplugin.lca.LCADefinition;
-import com.bealearts.livecycleplugin.lca.LCAObject;
-import com.bealearts.livecycleplugin.lca.Reference;
+import com.bealearts.livecycle.lca.AppInfo;
+import com.bealearts.livecycle.lca.LCADefinition;
+import com.bealearts.livecycle.lca.LCAObject;
+import com.bealearts.livecycle.lca.Reference;
+import com.bealearts.livecycle.utils.LCAUtils;
 
 /**
  * Tests for LCAUtils
