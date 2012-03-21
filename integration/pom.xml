@@ -14,15 +14,15 @@
 
 	<build>
 		<sourceDirectory>src/main/lca</sourceDirectory>
-	
-		<plugins>
-			<plugin>
-				<groupId>${project.groupId}</groupId>
+		
+		<extensions>
+            <extension>
+     			<groupId>${project.groupId}</groupId>
 				<artifactId>livecyclemojos-maven-plugin</artifactId>
-				<version>${project.version}</version>
-				<extensions>true</extensions>
-			</plugin>
-		</plugins>
+				<version>${project.version}</version>       
+            </extension>
+		</extensions>
+
 
 		<pluginManagement>
 			<plugins>
