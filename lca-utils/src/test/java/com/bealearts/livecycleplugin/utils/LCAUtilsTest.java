@@ -193,7 +193,7 @@ public class LCAUtilsTest
 	private File getResource(String path)
 	{
 		String absolutePath = this.getClass().getClassLoader().getResource(path).toString();
-		absolutePath = absolutePath.replaceFirst("file:", "");
+		absolutePath = absolutePath.replaceFirst("file:", "").replaceAll("%20", " ");
 		
 		return new File(absolutePath);
 	}
