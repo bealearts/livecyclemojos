@@ -54,13 +54,19 @@
 		</dependency>
 
 	</dependencies>
-	
-	
+
+
+
+>>>>>>> 363042ee7148dd2ac84ee091f7ca741fdca49a8a
 	<profiles>
 		<profile>
 			<id>release</id>
 			<build>
 				<plugins>
+<<<<<<< HEAD
+=======
+					
+>>>>>>> 363042ee7148dd2ac84ee091f7ca741fdca49a8a
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
@@ -74,6 +80,7 @@
 								</goals>
 							</execution>
 						</executions>
+<<<<<<< HEAD
 					</plugin>				
 				</plugins>
 			</build>
@@ -81,6 +88,17 @@
 	</profiles>	
 	
 	
+=======
+					</plugin>
+					
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+
+
+>>>>>>> 363042ee7148dd2ac84ee091f7ca741fdca49a8a
 	<scm>
 		<connection>scm:git:https://code.google.com/p/livecyclemojos/</connection>
 		<developerConnection>scm:git:https://code.google.com/p/livecyclemojos/</developerConnection>
