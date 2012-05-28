@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.bealearts.livecycleplugin;
+package com.bealearts.livecycle;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 
-import com.bealearts.livecycleplugin.lca.LCADefinition;
-import com.bealearts.livecycleplugin.utils.LCAUtils;
+import com.bealearts.livecycle.lca.LCADefinition;
+import com.bealearts.livecycle.utils.LCAUtils;
 
 import java.io.File;
 import java.io.IOException;

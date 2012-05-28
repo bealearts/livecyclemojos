@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.bealearts.livecycleplugin;
+package com.bealearts.livecycle;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;

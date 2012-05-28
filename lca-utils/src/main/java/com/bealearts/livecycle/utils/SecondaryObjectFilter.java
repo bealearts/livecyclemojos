@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.bealearts.livecycleplugin.utils;
+package com.bealearts.livecycle.utils;
 
 import java.io.File;
 import java.io.FileFilter;

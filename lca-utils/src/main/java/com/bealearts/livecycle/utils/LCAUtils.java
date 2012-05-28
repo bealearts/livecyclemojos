@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.bealearts.livecycleplugin.utils;
+package com.bealearts.livecycle.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -46,11 +46,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXParseException;
 
-import com.bealearts.livecycleplugin.utils.Base64Coder;
-import com.bealearts.livecycleplugin.lca.AppInfo;
-import com.bealearts.livecycleplugin.lca.LCADefinition;
-import com.bealearts.livecycleplugin.lca.LCAObject;
-import com.bealearts.livecycleplugin.lca.Reference;
+import com.bealearts.livecycle.utils.Base64Coder;
+import com.bealearts.livecycle.lca.AppInfo;
+import com.bealearts.livecycle.lca.LCADefinition;
+import com.bealearts.livecycle.lca.LCAObject;
+import com.bealearts.livecycle.lca.Reference;
 import com.bealearts.template.Block;
 import com.bealearts.template.SimpleTemplate;
 
